@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Bet4ABestWorldPoC.Repositories\Bet4ABestWorldPoC.Repositories.csproj" />
+    <ProjectReference Include="..\Bet4ABestWorldPoC.Utilities\Bet4ABestWorldPoC.Shared.csproj" />
+  </ItemGroup>
+
+</Project>
