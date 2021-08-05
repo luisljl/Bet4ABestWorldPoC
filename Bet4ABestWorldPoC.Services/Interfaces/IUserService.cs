@@ -7,8 +7,10 @@ using System.Threading.Tasks;
 
 namespace Bet4ABestWorldPoC.Services.Interfaces
 {
-    public interface ITokenGenerator
+    public interface IUserService
     {
-        string GenerateToken(User user);
+        Task Create(User user);
+        Task<User> GetUserByUsername(string username);
+        Task<User> GetById(int id);
     }
 }
