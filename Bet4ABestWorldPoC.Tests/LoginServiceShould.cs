@@ -8,6 +8,7 @@ using Bet4ABestWorldPoC.Repositories.Interfaces;
 using Bet4ABestWorldPoC.Services.Interfaces;
 using Bet4ABestWorldPoC.Utilities;
 using System.Threading.Tasks;
+using Bet4ABestWorldPoC.Services.Request;
 
 namespace Bet4ABestWorldPoC.Services.Tests
 {
@@ -18,17 +19,27 @@ namespace Bet4ABestWorldPoC.Services.Tests
         private const string DEFAULT_TOKEN = "123456";
         private readonly string DEFAULT_HASHED_PASSWORD = Security.HashPassword("passtest");
 
-        private readonly Mock<IUserRepository> _mockUserRepository;
-        private readonly Mock<ITokenGenerator> _mockTokenGenerator;
+        private readonly Mock<IUserService> _mockUserService;
+        private readonly Mock<ITokenService> _mockTokenService;
 
         private readonly LoginService _loginService;
 
         public LoginServiceShould()
         {
-            _mockUserRepository = new Mock<IUserRepository>();
-            _mockTokenGenerator = new Mock<ITokenGenerator>();
+            _mockUserService = new Mock<IUserService>();
+            _mockTokenService = new Mock<ITokenService>();
 
-            _loginService = new LoginService(_mockUserRepository.Object, _mockTokenGenerator.Object);
+            _loginService = new LoginService(_mockUserService.Object, _mockTokenService.Object);
+        }
+
+        [Fact]
+        public void Throw_invalid_login_request_exception_when_request_is_null()
+        {
+            LoginRequest request = null;
+
+            Func<Task> action = async () => await _loginService.Login(request);
+
+            action.Should().Throw<InvalidLoginRequestException>();
         }
 
         [Theory]
@@ -36,7 +47,9 @@ namespace Bet4ABestWorldPoC.Services.Tests
         [InlineData(null)]
         public void Throw_invalid_username_exception_when_username_is_empty_or_null(string username)
         {
-            Func<Task> action = async () => await _loginService.Login(username, DEFAULT_PASSWORD);
+            var request = new LoginRequest(username, DEFAULT_PASSWORD);
+
+            Func<Task> action = async () => await _loginService.Login(request);
             
             action.Should().Throw<InvalidUsernameException>();
         }
@@ -46,7 +59,9 @@ namespace Bet4ABestWorldPoC.Services.Tests
         [InlineData(null)]
         public void Throw_invalid_password_exception_when_password_is_empty_or_null(string password)
         {
-            Func<Task> action = async () => await _loginService.Login(DEFAULT_USERNAME, password);
+            var request = new LoginRequest(DEFAULT_USERNAME, password);
+
+            Func<Task> action = async () => await _loginService.Login(request);
 
             action.Should().Throw<InvalidPasswordException>();
         }
@@ -56,7 +71,9 @@ namespace Bet4ABestWorldPoC.Services.Tests
         {
             var invalidUsername = "teststest";
 
-            Func<Task> action = async () => await _loginService.Login(invalidUsername, DEFAULT_PASSWORD);
+            var request = new LoginRequest(invalidUsername, DEFAULT_PASSWORD);
+
+            Func<Task> action = async () => await _loginService.Login(request);
 
             action.Should().Throw<InvalidCredentialsException>();
         }
@@ -67,7 +84,9 @@ namespace Bet4ABestWorldPoC.Services.Tests
             
             var invalidPassword = "passwordTests";
 
-            Func<Task> action = async () => await _loginService.Login(DEFAULT_USERNAME, invalidPassword);
+            var request = new LoginRequest(DEFAULT_USERNAME, invalidPassword);
+
+            Func<Task> action = async () => await _loginService.Login(request);
 
             action.Should().Throw<InvalidCredentialsException>();
         }
@@ -84,11 +103,13 @@ namespace Bet4ABestWorldPoC.Services.Tests
                 Password = DEFAULT_HASHED_PASSWORD,
                 Username = DEFAULT_USERNAME
             };
-            _mockUserRepository.Setup(x => x.GetByUsername(DEFAULT_USERNAME)).Returns(Task.FromResult(expectedUser));
+            _mockUserService.Setup(x => x.GetUserByUsername(DEFAULT_USERNAME)).Returns(Task.FromResult(expectedUser));
 
-            _mockTokenGenerator.Setup(x => x.GenerateToken(expectedUser)).Returns(DEFAULT_TOKEN);
+            _mockTokenService.Setup(x => x.GenerateToken(expectedUser)).Returns(DEFAULT_TOKEN);
 
-            var loginResponse = await _loginService.Login(DEFAULT_USERNAME, DEFAULT_PASSWORD);
+            var request = new LoginRequest(DEFAULT_USERNAME, DEFAULT_PASSWORD);
+
+            var loginResponse = await _loginService.Login(request);
 
             loginResponse.Token.Should().Be(expectedLoginResponse.Token);
         }

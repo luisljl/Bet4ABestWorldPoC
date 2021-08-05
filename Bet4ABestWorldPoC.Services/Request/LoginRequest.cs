@@ -4,13 +4,17 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Bet4ABestWorldPoC.Repositories.Entities
+namespace Bet4ABestWorldPoC.Services.Request
 {
-    public class User
+    public class LoginRequest
     {
+        public LoginRequest(string username, string password)
+        {
+            Username = username;
+            Password = password;
+        }
+
         public string Username { get; set; }
         public string Password { get; set; }
-        public string Email { get; set; }
-        public DateTime CreatedOn { get; set; }
     }
 }

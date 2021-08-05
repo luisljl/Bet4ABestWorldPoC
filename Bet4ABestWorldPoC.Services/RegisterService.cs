@@ -1,6 +1,7 @@
 ﻿using Bet4ABestWorldPoC.Repositories.Entities;
 using Bet4ABestWorldPoC.Repositories.Interfaces;
 using Bet4ABestWorldPoC.Services.Exceptions;
+using Bet4ABestWorldPoC.Services.Interfaces;
 using Bet4ABestWorldPoC.Services.Request;
 using Bet4ABestWorldPoC.Utilities;
 using System;
@@ -11,29 +12,29 @@ using System.Threading.Tasks;
 
 namespace Bet4ABestWorldPoC.Services
 {
-    public class RegisterService
+    public class RegisterService : IRegisterService
     {
-        private readonly IUserRepository _userRepository;
+        private readonly IUserService _userService;
 
-        public RegisterService(IUserRepository userRepository)
+        public RegisterService(IUserService userService)
         {
-            _userRepository = userRepository;
+            _userService = userService;
         }
 
-        public async Task Register(RegisterRequest request)
+        public async Task RegisterUser(RegisterRequest request)
         {
             ValidateRegisterRequest(request);
-            var user = await _userRepository.GetByUsername(request.Username);
-            if (user != null)
-            {
-                throw new UserAlreadyExistsException();
-            }
             var newUser = MapNewUserFromRequest(request);
-            await _userRepository.Save(newUser);
+            await _userService.Create(newUser);
         }
 
         private void ValidateRegisterRequest(RegisterRequest request)
         {
+            if (request == null)
+            {
+                throw new InvalidRegisterRequestException();
+            }
+
             if (string.IsNullOrWhiteSpace(request.Email))
             {
                 throw new InvalidEmailException();
