@@ -5,5 +5,6 @@ namespace Bet4ABestWorldPoC.Repositories.Interfaces
     public interface IUserRepository
     {
         User GetByUsername(string username);
+        void Save(User user);
     }
 }

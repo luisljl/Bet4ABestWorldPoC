@@ -33,7 +33,7 @@ namespace Bet4ABestWorldPoC.Services.Tests
         [Theory]
         [InlineData("")]
         [InlineData(null)]
-        public void throw_invalid_username_exception_when_username_is_empty_or_null(string username)
+        public void Throw_invalid_username_exception_when_username_is_empty_or_null(string username)
         {
             Action action = () => _loginService.Login(username, DEFAULT_PASSWORD);
             
@@ -43,7 +43,7 @@ namespace Bet4ABestWorldPoC.Services.Tests
         [Theory]
         [InlineData("")]
         [InlineData(null)]
-        public void throw_invalid_password_exception_when_password_is_empty_or_null(string password)
+        public void Throw_invalid_password_exception_when_password_is_empty_or_null(string password)
         {
             Action action = () => _loginService.Login(DEFAULT_USERNAME, password);
 
@@ -51,7 +51,7 @@ namespace Bet4ABestWorldPoC.Services.Tests
         }
 
         [Fact]
-        public void throw_invalid_credentials_exception_when_username_is_invalid()
+        public void Throw_invalid_credentials_exception_when_username_is_invalid()
         {
             var invalidUsername = "teststest";
 
@@ -61,7 +61,7 @@ namespace Bet4ABestWorldPoC.Services.Tests
         }
 
         [Fact]
-        public void throw_invalid_credentials_exception_when_password_is_invalid()
+        public void Throw_invalid_credentials_exception_when_password_is_invalid()
         {
             
             var invalidPassword = "passwordTests";
@@ -72,7 +72,7 @@ namespace Bet4ABestWorldPoC.Services.Tests
         }
 
         [Fact]
-        public void return_valid_login_response_when_username_and_password_are_valid()
+        public void Return_valid_login_response_when_username_and_password_are_valid()
         {
             var expectedLoginResponse = new LoginResponse()
             {
