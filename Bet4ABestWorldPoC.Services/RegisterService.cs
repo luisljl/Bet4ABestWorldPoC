@@ -20,16 +20,16 @@ namespace Bet4ABestWorldPoC.Services
             _userRepository = userRepository;
         }
 
-        public void Register(RegisterRequest request)
+        public async Task Register(RegisterRequest request)
         {
             ValidateRegisterRequest(request);
-            var user = _userRepository.GetByUsername(request.Username);
+            var user = await _userRepository.GetByUsername(request.Username);
             if (user != null)
             {
                 throw new UserAlreadyExistsException();
             }
             var newUser = MapNewUserFromRequest(request);
-            _userRepository.Save(newUser);
+            await _userRepository.Save(newUser);
         }
 
         private void ValidateRegisterRequest(RegisterRequest request)

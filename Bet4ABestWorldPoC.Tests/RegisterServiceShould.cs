@@ -2,13 +2,11 @@ using System;
 using Xunit;
 using FluentAssertions;
 using Bet4ABestWorldPoC.Services.Exceptions;
-using Bet4ABestWorldPoC.Services.Responses;
 using Moq;
 using Bet4ABestWorldPoC.Repositories.Interfaces;
-using Bet4ABestWorldPoC.Services.Interfaces;
-using Bet4ABestWorldPoC.Utilities;
 using Bet4ABestWorldPoC.Services.Request;
 using Bet4ABestWorldPoC.Repositories.Entities;
+using System.Threading.Tasks;
 
 namespace Bet4ABestWorldPoC.Services.Tests
 {
@@ -36,7 +34,7 @@ namespace Bet4ABestWorldPoC.Services.Tests
         {
             var request = new RegisterRequest(username, DEFAULT_PASSWORD, DEFAULT_EMAIL);
 
-            Action action = () => _registerService.Register(request);
+            Func<Task> action = async () => await _registerService.Register(request);
             
             action.Should().Throw<InvalidUsernameException>();
         }
@@ -48,7 +46,7 @@ namespace Bet4ABestWorldPoC.Services.Tests
         {
             var request = new RegisterRequest(DEFAULT_USERNAME, password, DEFAULT_EMAIL);
 
-            Action action = () => _registerService.Register(request);
+            Func<Task> action = async () => await _registerService.Register(request);
 
             action.Should().Throw<InvalidPasswordException>();
         }
@@ -60,7 +58,7 @@ namespace Bet4ABestWorldPoC.Services.Tests
         {
             var request = new RegisterRequest(DEFAULT_USERNAME, DEFAULT_PASSWORD, email);
 
-            Action action = () => _registerService.Register(request);
+            Func<Task> action = async () => await _registerService.Register(request);
 
             action.Should().Throw<InvalidEmailException>();
         }
@@ -75,9 +73,9 @@ namespace Bet4ABestWorldPoC.Services.Tests
                 Username = DEFAULT_USERNAME
             };
 
-            _mockUserRepository.Setup(x => x.GetByUsername(DEFAULT_USERNAME)).Returns(expectedUser);
+            _mockUserRepository.Setup(x => x.GetByUsername(DEFAULT_USERNAME)).Returns(Task.FromResult(expectedUser));
 
-            Action action = () => _registerService.Register(request);
+            Func<Task> action = async () => await _registerService.Register(request);
 
             action.Should().Throw<UserAlreadyExistsException>();
         }
@@ -89,14 +87,11 @@ namespace Bet4ABestWorldPoC.Services.Tests
 
             User expectedUser = null;
 
-            _mockUserRepository.Setup(x => x.GetByUsername(DEFAULT_USERNAME)).Returns(expectedUser);
+            _mockUserRepository.Setup(x => x.GetByUsername(DEFAULT_USERNAME)).Returns(Task.FromResult(expectedUser));
 
-            Action action = () => _registerService.Register(request);
+            Func<Task> action = async () => await _registerService.Register(request);
 
             action.Should().NotThrow<Exception>();
         }
     }
-
-
-
 }

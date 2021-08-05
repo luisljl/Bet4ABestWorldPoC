@@ -5,6 +5,7 @@ using Bet4ABestWorldPoC.Services.Responses;
 using Bet4ABestWorldPoC.Utilities;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Bet4ABestWorldPoC.Services
 {
@@ -19,7 +20,7 @@ namespace Bet4ABestWorldPoC.Services
             _tokenGenerator = tokenGenerator;
         }
 
-        public LoginResponse Login(string username, string password)
+        public async Task<LoginResponse> Login(string username, string password)
         {
             if (string.IsNullOrWhiteSpace(username))
             {
@@ -31,7 +32,7 @@ namespace Bet4ABestWorldPoC.Services
                 throw new InvalidPasswordException();
             }
 
-            var user = _userRepository.GetByUsername(username);
+            var user = await _userRepository.GetByUsername(username);
             if (user == null || !Security.VerifyPassword(password, user.Password))
             {
                 throw new InvalidCredentialsException();
