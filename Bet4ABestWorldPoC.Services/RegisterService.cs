@@ -1,13 +1,9 @@
 ﻿using Bet4ABestWorldPoC.Repositories.Entities;
-using Bet4ABestWorldPoC.Repositories.Interfaces;
 using Bet4ABestWorldPoC.Services.Exceptions;
 using Bet4ABestWorldPoC.Services.Interfaces;
 using Bet4ABestWorldPoC.Services.Request;
 using Bet4ABestWorldPoC.Utilities;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Bet4ABestWorldPoC.Services

@@ -103,7 +103,7 @@ namespace Bet4ABestWorldPoC.Services.Tests
                 Password = DEFAULT_HASHED_PASSWORD,
                 Username = DEFAULT_USERNAME
             };
-            _mockUserService.Setup(x => x.GetUserByUsername(DEFAULT_USERNAME)).Returns(Task.FromResult(expectedUser));
+            _mockUserService.Setup(x => x.GetUserByUsername(DEFAULT_USERNAME)).ReturnsAsync(expectedUser);
 
             _mockTokenService.Setup(x => x.GenerateToken(expectedUser)).Returns(DEFAULT_TOKEN);
 

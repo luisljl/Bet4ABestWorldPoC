@@ -35,7 +35,7 @@ namespace Bet4ABestWorldPoC.Services.Tests
         {
             var inventedId = 24345;
 
-            _mockUserRepository.Setup(x => x.GetById(inventedId)).Returns(Task.FromResult(null as User));
+            _mockUserRepository.Setup(x => x.GetById(inventedId)).ReturnsAsync((null as User));
 
             Func<Task> action = async () => await _userService.GetById(inventedId);
 

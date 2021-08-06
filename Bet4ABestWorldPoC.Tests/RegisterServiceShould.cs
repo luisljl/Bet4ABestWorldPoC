@@ -81,7 +81,7 @@ namespace Bet4ABestWorldPoC.Services.Tests
 
             User expectedUser = null;
 
-            _mockUserService.Setup(x => x.GetUserByUsername(DEFAULT_USERNAME)).Returns(Task.FromResult(expectedUser));
+            _mockUserService.Setup(x => x.GetUserByUsername(DEFAULT_USERNAME)).ReturnsAsync(expectedUser);
 
             Func<Task> action = async () => await _registerService.RegisterUser(request);
 
