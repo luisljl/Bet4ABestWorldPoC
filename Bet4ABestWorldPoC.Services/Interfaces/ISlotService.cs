@@ -6,8 +6,8 @@ namespace Bet4ABestWorldPoC.Services.Interfaces
 {
     public interface ISlotService
     {
-        Task<List<Slot>> GetAll();
-        Task<List<Slot>> GetAllSlotThatContainsName(string name);
-        Task<Slot> GetSlotById(int id);
+        Task<List<Slot>> GetAllAsync();
+        Task<List<Slot>> GetAllSlotThatContainsNameAsync(string name);
+        Task<Slot> GetSlotByIdAsync(int id);
     }
 }

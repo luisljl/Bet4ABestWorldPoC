@@ -69,9 +69,9 @@ namespace Bet4ABestWorldPoC.Services.Tests
         [Fact]
         public async void Return_list_of_all_slots()
         {
-            _mockSlotRepository.Setup(x => x.GetAll()).ReturnsAsync(DEFAULT_SLOTS);
+            _mockSlotRepository.Setup(x => x.GetAllAsync()).ReturnsAsync(DEFAULT_SLOTS);
 
-            var result = await _slotService.GetAll();
+            var result = await _slotService.GetAllAsync();
 
             result.Should().BeEquivalentTo(DEFAULT_SLOTS);
         }
@@ -82,9 +82,9 @@ namespace Bet4ABestWorldPoC.Services.Tests
             var name = "name";
             var expectedSlots = DEFAULT_SLOTS.Where(w => w.Name.Contains(name)).ToList();
 
-            _mockSlotRepository.Setup(x => x.GetAllWhere(w => w.Name.Contains(name))).ReturnsAsync(expectedSlots);
+            _mockSlotRepository.Setup(x => x.GetAllWhereAsync(w => w.Name.Contains(name))).ReturnsAsync(expectedSlots);
 
-            var result = await _slotService.GetAllSlotThatContainsName(name);
+            var result = await _slotService.GetAllSlotThatContainsNameAsync(name);
 
             result.Should().BeEquivalentTo(expectedSlots);
         }
@@ -92,9 +92,9 @@ namespace Bet4ABestWorldPoC.Services.Tests
         [Fact]
         public async void Return_a_slot_by_id()
         {
-            _mockSlotRepository.Setup(x => x.GetById(DEFAULT_SLOT.Id)).ReturnsAsync(DEFAULT_SLOT);
+            _mockSlotRepository.Setup(x => x.GetByIdAsync(DEFAULT_SLOT.Id)).ReturnsAsync(DEFAULT_SLOT);
 
-            var result = await _slotService.GetSlotById(DEFAULT_SLOT.Id);
+            var result = await _slotService.GetSlotByIdAsync(DEFAULT_SLOT.Id);
 
             result.Should().Be(DEFAULT_SLOT);
         }
@@ -104,9 +104,9 @@ namespace Bet4ABestWorldPoC.Services.Tests
         {
             var invalidId = 333;
 
-            _mockSlotRepository.Setup(x => x.GetById(invalidId)).ReturnsAsync(null as Slot);
+            _mockSlotRepository.Setup(x => x.GetByIdAsync(invalidId)).ReturnsAsync(null as Slot);
 
-            Func<Task> action = async () => await _slotService.GetSlotById(invalidId);
+            Func<Task> action = async () => await _slotService.GetSlotByIdAsync(invalidId);
 
             action.Should().Throw<SlotNotFoundException>();
         }

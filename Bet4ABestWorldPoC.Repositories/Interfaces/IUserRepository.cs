@@ -7,8 +7,8 @@ namespace Bet4ABestWorldPoC.Repositories.Interfaces
 {
     public interface IUserRepository
     {
-        Task<User> GetById(int id);
-        Task<User> FirstOrDefault(Expression<Func<User, bool>> predicate);
-        Task Add(User user);
+        Task<User> GetByIdAsync(int id);
+        Task<User> FirstOrDefaultAsync(Expression<Func<User, bool>> predicate);
+        Task AddAsync(User user);
     }
 }

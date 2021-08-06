@@ -5,8 +5,8 @@ namespace Bet4ABestWorldPoC.Services.Interfaces
 {
     public interface IUserService
     {
-        Task Create(User user);
-        Task<User> GetUserByUsername(string username);
-        Task<User> GetById(int id);
+        Task CreateAsync(User user);
+        Task<User> GetUserByUsernameAsync(string username);
+        Task<User> GetByIdAsync(int id);
     }
 }

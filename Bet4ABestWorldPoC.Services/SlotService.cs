@@ -16,19 +16,19 @@ namespace Bet4ABestWorldPoC.Services
             _slotRepository = slotRepository;
         }
 
-        public async Task<List<Slot>> GetAll()
+        public async Task<List<Slot>> GetAllAsync()
         {
-            return await _slotRepository.GetAll();
+            return await _slotRepository.GetAllAsync();
         }
 
-        public async Task<List<Slot>> GetAllSlotThatContainsName(string name)
+        public async Task<List<Slot>> GetAllSlotThatContainsNameAsync(string name)
         {
-            return await _slotRepository.GetAllWhere(w => w.Name.Contains(name));
+            return await _slotRepository.GetAllWhereAsync(w => w.Name.Contains(name));
         }
 
-        public async Task<Slot> GetSlotById(int id)
+        public async Task<Slot> GetSlotByIdAsync(int id)
         {
-            var slot = await _slotRepository.GetById(id);
+            var slot = await _slotRepository.GetByIdAsync(id);
             if (slot == null)
             {
                 throw new SlotNotFoundException();

@@ -48,26 +48,26 @@ namespace Bet4ABestWorldPoC.Services
             return tokenHandler.WriteToken(token);
         }
 
-        public async Task InvalidateToken(string token)
+        public async Task InvalidateTokenAsync(string token)
         {
             if (string.IsNullOrWhiteSpace(token))
             {
                 throw new InvalidTokenException();
             }
-            await _blackListTokenRepository.Add(new BlackListToken()
+            await _blackListTokenRepository.AddAsync(new BlackListToken()
             {
                 CreatedOn = DateTime.Now,
                 InvalidToken = token
             });
         }
 
-        public async Task<BlackListToken> GetInvalidToken(string token)
+        public async Task<BlackListToken> GetInvalidTokenAsync(string token)
         {
             if (string.IsNullOrWhiteSpace(token))
             {
                 throw new InvalidTokenException();
             }
-            return await _blackListTokenRepository.Get(token);
+            return await _blackListTokenRepository.GetAsync(token);
         }
     }
 }

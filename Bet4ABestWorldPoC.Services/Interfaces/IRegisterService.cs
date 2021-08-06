@@ -5,6 +5,6 @@ namespace Bet4ABestWorldPoC.Services.Interfaces
 {
     public interface IRegisterService
     {
-        Task RegisterUser(RegisterRequest request);
+        Task RegisterUserAsync(RegisterRequest request);
     }
 }

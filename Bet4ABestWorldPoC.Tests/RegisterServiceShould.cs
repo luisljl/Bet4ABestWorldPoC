@@ -33,7 +33,7 @@ namespace Bet4ABestWorldPoC.Services.Tests
         {
             RegisterRequest request = null;
 
-            Func<Task> action = async () => await _registerService.RegisterUser(request);
+            Func<Task> action = async () => await _registerService.RegisterUserAsync(request);
 
             action.Should().Throw<InvalidRegisterRequestException>();
         }
@@ -45,7 +45,7 @@ namespace Bet4ABestWorldPoC.Services.Tests
         {
             var request = new RegisterRequest(username, DEFAULT_PASSWORD, DEFAULT_EMAIL);
 
-            Func<Task> action = async () => await _registerService.RegisterUser(request);
+            Func<Task> action = async () => await _registerService.RegisterUserAsync(request);
             
             action.Should().Throw<InvalidUsernameException>();
         }
@@ -57,7 +57,7 @@ namespace Bet4ABestWorldPoC.Services.Tests
         {
             var request = new RegisterRequest(DEFAULT_USERNAME, password, DEFAULT_EMAIL);
 
-            Func<Task> action = async () => await _registerService.RegisterUser(request);
+            Func<Task> action = async () => await _registerService.RegisterUserAsync(request);
 
             action.Should().Throw<InvalidPasswordException>();
         }
@@ -69,7 +69,7 @@ namespace Bet4ABestWorldPoC.Services.Tests
         {
             var request = new RegisterRequest(DEFAULT_USERNAME, DEFAULT_PASSWORD, email);
 
-            Func<Task> action = async () => await _registerService.RegisterUser(request);
+            Func<Task> action = async () => await _registerService.RegisterUserAsync(request);
 
             action.Should().Throw<InvalidEmailException>();
         }
@@ -81,9 +81,9 @@ namespace Bet4ABestWorldPoC.Services.Tests
 
             User expectedUser = null;
 
-            _mockUserService.Setup(x => x.GetUserByUsername(DEFAULT_USERNAME)).ReturnsAsync(expectedUser);
+            _mockUserService.Setup(x => x.GetUserByUsernameAsync(DEFAULT_USERNAME)).ReturnsAsync(expectedUser);
 
-            Func<Task> action = async () => await _registerService.RegisterUser(request);
+            Func<Task> action = async () => await _registerService.RegisterUserAsync(request);
 
             action.Should().NotThrow<Exception>();
         }

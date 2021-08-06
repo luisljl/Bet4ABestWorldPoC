@@ -15,20 +15,20 @@ namespace Bet4ABestWorldPoC.Services
             _userRepository = userRepository;
         }
 
-        public async Task Create(User newUser)
+        public async Task CreateAsync(User newUser)
         {
             ValidateUser(newUser);
-            var user = await _userRepository.FirstOrDefault(w => w.Username == newUser.Username);
+            var user = await _userRepository.FirstOrDefaultAsync(w => w.Username == newUser.Username);
             if (user != null)
             {
                 throw new UserAlreadyExistsException();
             }
-            await _userRepository.Add(newUser);
+            await _userRepository.AddAsync(newUser);
         }
 
-        public async Task<User> GetById(int id)
+        public async Task<User> GetByIdAsync(int id)
         {
-            var user = await _userRepository.GetById(id);
+            var user = await _userRepository.GetByIdAsync(id);
             if (user == null)
             {
                 throw new UserNotFoundException();
@@ -36,13 +36,13 @@ namespace Bet4ABestWorldPoC.Services
             return user;
         }
 
-        public async Task<User> GetUserByUsername(string username)
+        public async Task<User> GetUserByUsernameAsync(string username)
         {
             if (string.IsNullOrWhiteSpace(username))
             {
                 throw new InvalidUsernameException();
             }
-            var user = await _userRepository.FirstOrDefault(w => w.Username == username);
+            var user = await _userRepository.FirstOrDefaultAsync(w => w.Username == username);
             if (user == null)
             {
                 throw new UserNotFoundException();

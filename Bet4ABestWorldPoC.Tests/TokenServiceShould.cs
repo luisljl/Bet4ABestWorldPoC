@@ -72,7 +72,7 @@ namespace Bet4ABestWorldPoC.Services.Tests
         [Fact]
         public void Not_throw_a_exception_when_a_blacklist_token_is_created()
         {
-            Func<Task> action = async () => await _tokenService.InvalidateToken(DEFAULT_TOKEN);
+            Func<Task> action = async () => await _tokenService.InvalidateTokenAsync(DEFAULT_TOKEN);
 
             action.Should().NotThrow<Exception>();
         }
@@ -80,7 +80,7 @@ namespace Bet4ABestWorldPoC.Services.Tests
         [Fact]
         public void Throw_a_invalid_token_exception_when_token_is_null_or_empty_when_is_added_to_a_blacklist()
         {
-            Func<Task> action = async () => await _tokenService.InvalidateToken(null);
+            Func<Task> action = async () => await _tokenService.InvalidateTokenAsync(null);
 
             action.Should().Throw<InvalidTokenException>();
         }
@@ -88,7 +88,7 @@ namespace Bet4ABestWorldPoC.Services.Tests
         [Fact]
         public void Throw_a_invalid_token_exception_when_token_is_null_or_empty_when_is_searched()
         {
-            Func<Task> action = async () => await _tokenService.GetInvalidToken(null);
+            Func<Task> action = async () => await _tokenService.GetInvalidTokenAsync(null);
 
             action.Should().Throw<InvalidTokenException>();
         }
@@ -96,9 +96,9 @@ namespace Bet4ABestWorldPoC.Services.Tests
         [Fact]
         public async void Return_null_when_token_does_not_exists()
         {
-            _mockBlackListTokenRepository.Setup(x => x.Get(DEFAULT_TOKEN)).ReturnsAsync(null as BlackListToken);
+            _mockBlackListTokenRepository.Setup(x => x.GetAsync(DEFAULT_TOKEN)).ReturnsAsync(null as BlackListToken);
 
-            var result = await _tokenService.GetInvalidToken(DEFAULT_TOKEN);
+            var result = await _tokenService.GetInvalidTokenAsync(DEFAULT_TOKEN);
 
             result.Should().BeNull();
         }
@@ -112,9 +112,9 @@ namespace Bet4ABestWorldPoC.Services.Tests
                 InvalidToken = DEFAULT_TOKEN,
             };
 
-            _mockBlackListTokenRepository.Setup(x => x.Get(DEFAULT_TOKEN)).ReturnsAsync(expectedInvalidToken);
+            _mockBlackListTokenRepository.Setup(x => x.GetAsync(DEFAULT_TOKEN)).ReturnsAsync(expectedInvalidToken);
 
-            var result = await _tokenService.GetInvalidToken(DEFAULT_TOKEN);
+            var result = await _tokenService.GetInvalidTokenAsync(DEFAULT_TOKEN);
 
             result.Should().Be(expectedInvalidToken);
         }

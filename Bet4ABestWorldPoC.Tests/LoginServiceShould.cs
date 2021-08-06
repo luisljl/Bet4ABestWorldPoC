@@ -37,7 +37,7 @@ namespace Bet4ABestWorldPoC.Services.Tests
         {
             LoginRequest request = null;
 
-            Func<Task> action = async () => await _loginService.Login(request);
+            Func<Task> action = async () => await _loginService.LoginAsync(request);
 
             action.Should().Throw<InvalidLoginRequestException>();
         }
@@ -49,7 +49,7 @@ namespace Bet4ABestWorldPoC.Services.Tests
         {
             var request = new LoginRequest(username, DEFAULT_PASSWORD);
 
-            Func<Task> action = async () => await _loginService.Login(request);
+            Func<Task> action = async () => await _loginService.LoginAsync(request);
             
             action.Should().Throw<InvalidUsernameException>();
         }
@@ -61,7 +61,7 @@ namespace Bet4ABestWorldPoC.Services.Tests
         {
             var request = new LoginRequest(DEFAULT_USERNAME, password);
 
-            Func<Task> action = async () => await _loginService.Login(request);
+            Func<Task> action = async () => await _loginService.LoginAsync(request);
 
             action.Should().Throw<InvalidPasswordException>();
         }
@@ -73,7 +73,7 @@ namespace Bet4ABestWorldPoC.Services.Tests
 
             var request = new LoginRequest(invalidUsername, DEFAULT_PASSWORD);
 
-            Func<Task> action = async () => await _loginService.Login(request);
+            Func<Task> action = async () => await _loginService.LoginAsync(request);
 
             action.Should().Throw<InvalidCredentialsException>();
         }
@@ -86,7 +86,7 @@ namespace Bet4ABestWorldPoC.Services.Tests
 
             var request = new LoginRequest(DEFAULT_USERNAME, invalidPassword);
 
-            Func<Task> action = async () => await _loginService.Login(request);
+            Func<Task> action = async () => await _loginService.LoginAsync(request);
 
             action.Should().Throw<InvalidCredentialsException>();
         }
@@ -103,13 +103,13 @@ namespace Bet4ABestWorldPoC.Services.Tests
                 Password = DEFAULT_HASHED_PASSWORD,
                 Username = DEFAULT_USERNAME
             };
-            _mockUserService.Setup(x => x.GetUserByUsername(DEFAULT_USERNAME)).ReturnsAsync(expectedUser);
+            _mockUserService.Setup(x => x.GetUserByUsernameAsync(DEFAULT_USERNAME)).ReturnsAsync(expectedUser);
 
             _mockTokenService.Setup(x => x.GenerateToken(expectedUser)).Returns(DEFAULT_TOKEN);
 
             var request = new LoginRequest(DEFAULT_USERNAME, DEFAULT_PASSWORD);
 
-            var loginResponse = await _loginService.Login(request);
+            var loginResponse = await _loginService.LoginAsync(request);
 
             loginResponse.Token.Should().Be(expectedLoginResponse.Token);
         }

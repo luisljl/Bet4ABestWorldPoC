@@ -6,6 +6,6 @@ namespace Bet4ABestWorldPoC.Services.Interfaces
 {
     public interface ILoginService
     {
-        Task<LoginResponse> Login(LoginRequest request);
+        Task<LoginResponse> LoginAsync(LoginRequest request);
     }
 }

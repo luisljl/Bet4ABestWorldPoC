@@ -35,9 +35,9 @@ namespace Bet4ABestWorldPoC.Services.Tests
         {
             var inventedId = 24345;
 
-            _mockUserRepository.Setup(x => x.GetById(inventedId)).ReturnsAsync((null as User));
+            _mockUserRepository.Setup(x => x.GetByIdAsync(inventedId)).ReturnsAsync((null as User));
 
-            Func<Task> action = async () => await _userService.GetById(inventedId);
+            Func<Task> action = async () => await _userService.GetByIdAsync(inventedId);
 
             action.Should().Throw<UserNotFoundException>();
         }
@@ -48,9 +48,9 @@ namespace Bet4ABestWorldPoC.Services.Tests
             var inventedUsername = "user";
             User expectedUser = null;
 
-            _mockUserRepository.Setup(x => x.FirstOrDefault(w => w.Username == inventedUsername)).ReturnsAsync(expectedUser);
+            _mockUserRepository.Setup(x => x.FirstOrDefaultAsync(w => w.Username == inventedUsername)).ReturnsAsync(expectedUser);
 
-            Func<Task> action = async () => await _userService.GetUserByUsername(inventedUsername);
+            Func<Task> action = async () => await _userService.GetUserByUsernameAsync(inventedUsername);
 
             action.Should().Throw<UserNotFoundException>();
         }
@@ -65,9 +65,9 @@ namespace Bet4ABestWorldPoC.Services.Tests
                 Username = username
             };
 
-            _mockUserRepository.Setup(x => x.FirstOrDefault(w => w.Username == username)).ReturnsAsync(expectedUser);
+            _mockUserRepository.Setup(x => x.FirstOrDefaultAsync(w => w.Username == username)).ReturnsAsync(expectedUser);
 
-            Func<Task> action = async () => await _userService.GetUserByUsername(username);
+            Func<Task> action = async () => await _userService.GetUserByUsernameAsync(username);
 
             action.Should().Throw<InvalidUsernameException>();
         }
@@ -82,9 +82,9 @@ namespace Bet4ABestWorldPoC.Services.Tests
                 Username = username
             };
 
-            _mockUserRepository.Setup(x => x.FirstOrDefault(w => w.Username == username)).ReturnsAsync(expectedUser);
+            _mockUserRepository.Setup(x => x.FirstOrDefaultAsync(w => w.Username == username)).ReturnsAsync(expectedUser);
 
-            var result = await _userService.GetUserByUsername(username);
+            var result = await _userService.GetUserByUsernameAsync(username);
 
             result.Username.Should().Be(username);
         }
@@ -94,7 +94,7 @@ namespace Bet4ABestWorldPoC.Services.Tests
         {
             User user = null;
 
-            Func<Task> action = async () => await _userService.Create(user);
+            Func<Task> action = async () => await _userService.CreateAsync(user);
 
             action.Should().Throw<InvalidUserDataException>();
         }
@@ -111,7 +111,7 @@ namespace Bet4ABestWorldPoC.Services.Tests
                 Email = DEFAULT_EMAIL,
             };
 
-            Func<Task> action = async () => await _userService.Create(user);
+            Func<Task> action = async () => await _userService.CreateAsync(user);
 
             action.Should().Throw<InvalidUsernameException>();
         }
@@ -128,7 +128,7 @@ namespace Bet4ABestWorldPoC.Services.Tests
                 Email = DEFAULT_EMAIL,
             };
 
-            Func<Task> action = async () => await _userService.Create(user);
+            Func<Task> action = async () => await _userService.CreateAsync(user);
 
             action.Should().Throw<InvalidPasswordException>();
         }
@@ -145,7 +145,7 @@ namespace Bet4ABestWorldPoC.Services.Tests
                 Email = email,
             };
 
-            Func<Task> action = async () => await _userService.Create(user);
+            Func<Task> action = async () => await _userService.CreateAsync(user);
 
             action.Should().Throw<InvalidEmailException>();
         }
@@ -161,9 +161,9 @@ namespace Bet4ABestWorldPoC.Services.Tests
                 CreatedOn = DateTime.Now,
             };
 
-            _mockUserRepository.Setup(x => x.FirstOrDefault(w => w.Username == user.Username)).ReturnsAsync(user);
+            _mockUserRepository.Setup(x => x.FirstOrDefaultAsync(w => w.Username == user.Username)).ReturnsAsync(user);
 
-            Func<Task> action = async () => await _userService.Create(user);
+            Func<Task> action = async () => await _userService.CreateAsync(user);
 
             action.Should().Throw<UserAlreadyExistsException>();
 
@@ -182,9 +182,9 @@ namespace Bet4ABestWorldPoC.Services.Tests
 
             User expectedUser = null;
 
-            _mockUserRepository.Setup(x => x.FirstOrDefault(w => w.Username == DEFAULT_USERNAME)).ReturnsAsync(expectedUser);
+            _mockUserRepository.Setup(x => x.FirstOrDefaultAsync(w => w.Username == DEFAULT_USERNAME)).ReturnsAsync(expectedUser);
 
-            Func<Task> action = async () => await _userService.Create(user);
+            Func<Task> action = async () => await _userService.CreateAsync(user);
 
             action.Should().NotThrow<Exception>();
         }

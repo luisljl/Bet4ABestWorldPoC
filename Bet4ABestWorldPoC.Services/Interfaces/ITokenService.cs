@@ -6,7 +6,7 @@ namespace Bet4ABestWorldPoC.Services.Interfaces
     public interface ITokenService
     {
         string GenerateToken(User user);
-        Task InvalidateToken(string token);
-        Task<BlackListToken> GetInvalidToken(string token);
+        Task InvalidateTokenAsync(string token);
+        Task<BlackListToken> GetInvalidTokenAsync(string token);
     }
 }

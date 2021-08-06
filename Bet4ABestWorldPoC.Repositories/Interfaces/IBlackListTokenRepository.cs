@@ -5,8 +5,8 @@ namespace Bet4ABestWorldPoC.Repositories.Interfaces
 {
     public interface IBlackListTokenRepository
     {
-        Task Add(BlackListToken token);
-        Task Delete(BlackListToken token);
-        Task<BlackListToken> Get(string token);
+        Task AddAsync(BlackListToken token);
+        Task DeleteAsync(BlackListToken token);
+        Task<BlackListToken> GetAsync(string token);
     }
 }

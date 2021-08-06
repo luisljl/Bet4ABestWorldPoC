@@ -17,11 +17,11 @@ namespace Bet4ABestWorldPoC.Services
             _userService = userService;
         }
 
-        public async Task RegisterUser(RegisterRequest request)
+        public async Task RegisterUserAsync(RegisterRequest request)
         {
             ValidateRegisterRequest(request);
             var newUser = MapNewUserFromRequest(request);
-            await _userService.Create(newUser);
+            await _userService.CreateAsync(newUser);
         }
 
         private void ValidateRegisterRequest(RegisterRequest request)

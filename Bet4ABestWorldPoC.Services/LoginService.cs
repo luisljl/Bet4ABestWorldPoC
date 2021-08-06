@@ -18,10 +18,10 @@ namespace Bet4ABestWorldPoC.Services
             _tokenService = tokenService;
         }
 
-        public async Task<LoginResponse> Login(LoginRequest request)
+        public async Task<LoginResponse> LoginAsync(LoginRequest request)
         {
             ValidateLoginRequest(request);
-            var user = await _userService.GetUserByUsername(request.Username);
+            var user = await _userService.GetUserByUsernameAsync(request.Username);
             if (user == null || !Security.VerifyPassword(request.Password, user.Password))
             {
                 throw new InvalidCredentialsException();
