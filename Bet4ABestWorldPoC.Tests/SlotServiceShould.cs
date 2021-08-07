@@ -67,7 +67,7 @@ namespace Bet4ABestWorldPoC.Services.Tests
         }
 
         [Fact]
-        public async void Return_list_of_all_slots()
+        public async void Return_a_list_of_all_slots()
         {
             _mockSlotRepository.Setup(x => x.GetAllAsync()).ReturnsAsync(DEFAULT_SLOTS);
 

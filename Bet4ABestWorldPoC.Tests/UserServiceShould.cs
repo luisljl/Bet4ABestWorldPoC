@@ -166,7 +166,6 @@ namespace Bet4ABestWorldPoC.Services.Tests
             Func<Task> action = async () => await _userService.CreateAsync(user);
 
             action.Should().Throw<UserAlreadyExistsException>();
-
         }
 
         [Fact]

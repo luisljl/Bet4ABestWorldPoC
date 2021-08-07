@@ -8,5 +8,10 @@ namespace Bet4ABestWorldPoC.Services.Interfaces
         string GenerateToken(User user);
         Task InvalidateTokenAsync(string token);
         Task<BlackListToken> GetInvalidTokenAsync(string token);
+
+        string GetCurrentUserToken();
+        int GetCurrentUserId();
+        string GetCurrentUserEmail();
+        string GetCurrentUserUsername();
     }
 }
