@@ -3,7 +3,6 @@ using Xunit;
 using FluentAssertions;
 using Bet4ABestWorldPoC.Services.Exceptions;
 using Moq;
-using Bet4ABestWorldPoC.Repositories.Interfaces;
 using Bet4ABestWorldPoC.Services.Request;
 using Bet4ABestWorldPoC.Repositories.Entities;
 using System.Threading.Tasks;

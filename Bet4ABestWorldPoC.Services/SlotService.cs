@@ -2,7 +2,9 @@
 using Bet4ABestWorldPoC.Repositories.Interfaces;
 using Bet4ABestWorldPoC.Services.Exceptions;
 using Bet4ABestWorldPoC.Services.Interfaces;
+using Bet4ABestWorldPoC.Services.Responses;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Bet4ABestWorldPoC.Services
@@ -16,14 +18,16 @@ namespace Bet4ABestWorldPoC.Services
             _slotRepository = slotRepository;
         }
 
-        public async Task<List<Slot>> GetAllAsync()
+        public async Task<List<SlotResponse>> GetAllAsync()
         {
-            return await _slotRepository.GetAllAsync();
+            var slots = await _slotRepository.GetAllAsync();
+            return MapListSlotsToListSlotResponse(slots);
         }
 
-        public async Task<List<Slot>> GetAllSlotThatContainsNameAsync(string name)
+        public async Task<List<SlotResponse>> GetAllSlotThatContainsNameAsync(string name)
         {
-            return await _slotRepository.GetAllWhereAsync(w => w.Name.Contains(name));
+            var slots = await _slotRepository.GetAllWhereAsync(w => w.Name.Contains(name));
+            return MapListSlotsToListSlotResponse(slots);
         }
 
         public async Task<Slot> GetSlotByIdAsync(int id)
@@ -34,6 +38,15 @@ namespace Bet4ABestWorldPoC.Services
                 throw new SlotNotFoundException();
             }
             return slot;
+        }
+
+        private List<SlotResponse> MapListSlotsToListSlotResponse(List<Slot> slots)
+        {
+            return slots.Select(s => new SlotResponse()
+            {
+                Id = s.Id,
+                Name = s.Name
+            }).ToList();
         }
     }
 }

@@ -4,7 +4,6 @@ using FluentAssertions;
 using Bet4ABestWorldPoC.Services.Exceptions;
 using Bet4ABestWorldPoC.Services.Responses;
 using Moq;
-using Bet4ABestWorldPoC.Repositories.Interfaces;
 using Bet4ABestWorldPoC.Services.Interfaces;
 using Bet4ABestWorldPoC.Utilities;
 using System.Threading.Tasks;

@@ -1,6 +1,5 @@
 using Xunit;
 using FluentAssertions;
-using Bet4ABestWorldPoC.Services.Responses;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System;

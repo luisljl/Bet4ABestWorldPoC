@@ -2,15 +2,10 @@ using System;
 using Xunit;
 using FluentAssertions;
 using Bet4ABestWorldPoC.Services.Exceptions;
-using Bet4ABestWorldPoC.Services.Responses;
 using Moq;
 using Bet4ABestWorldPoC.Repositories.Interfaces;
-using Bet4ABestWorldPoC.Services.Interfaces;
-using Bet4ABestWorldPoC.Utilities;
 using System.Threading.Tasks;
 using Bet4ABestWorldPoC.Repositories.Entities;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace Bet4ABestWorldPoC.Services.Tests
 {
