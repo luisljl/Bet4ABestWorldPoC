@@ -7,17 +7,25 @@ using Bet4ABestWorldPoC.Repositories.Interfaces;
 using System.Threading.Tasks;
 using Bet4ABestWorldPoC.Repositories.Entities;
 using Bet4ABestWorldPoC.Services.Interfaces;
+using Bet4ABestWorldPoC.Services.Responses;
+using System.Collections.Generic;
+using System.Linq;
+using Bet4ABestWorldPoC.Services.Enums;
 
 namespace Bet4ABestWorldPoC.Services.Tests
 {
     public class UserServiceShould
     {
+        private const int DEFAULT_USER_ID = 1;
         private const string DEFAULT_USERNAME = "test";
         private const string DEFAULT_EMAIL = "test@test.com";
         private const string DEFAULT_PASSWORD = "passtest";
 
         private readonly Mock<IUserRepository> _mockUserRepository;
         private readonly Mock<IBalanceService> _mockBalanceService;
+        private readonly Mock<ITokenService> _mockTokenService;
+        private readonly Mock<IBetService> _mockBetService;
+        private readonly Mock<IDepositService> _mockDepositService;
 
         private readonly UserService _userService;
 
@@ -25,8 +33,11 @@ namespace Bet4ABestWorldPoC.Services.Tests
         {
             _mockUserRepository = new Mock<IUserRepository>();
             _mockBalanceService = new Mock<IBalanceService>();
+            _mockTokenService = new Mock<ITokenService>();
+            _mockBetService = new Mock<IBetService>();
+            _mockDepositService = new Mock<IDepositService>();
 
-            _userService = new UserService(_mockUserRepository.Object, _mockBalanceService.Object);
+            _userService = new UserService(_mockUserRepository.Object, _mockBalanceService.Object, _mockTokenService.Object, _mockBetService.Object, _mockDepositService.Object);
         }
 
         [Fact]
@@ -76,7 +87,7 @@ namespace Bet4ABestWorldPoC.Services.Tests
         [InlineData("test5")]
         public async void Return_user_when_username_exists_searching_by_username(string username)
         {
-            var expectedUser = new User() 
+            var expectedUser = new User()
             {
                 Username = username
             };
@@ -185,6 +196,160 @@ namespace Bet4ABestWorldPoC.Services.Tests
             Func<Task> action = async () => await _userService.CreateAsync(user);
 
             action.Should().NotThrow<Exception>();
+        }
+
+        [Fact]
+        public async Task Return_user_profile_with_bet_historic_and_deposit_historic()
+        {
+            var deposits = new List<Deposit>()
+            {
+                new Deposit()
+                {
+                    Id = 1,
+                    Amount = 10,
+                    MerchantId = (int)Merchant.BANK,
+                    UserId = DEFAULT_USER_ID
+                },
+                new Deposit()
+                {
+                    Id = 2,
+                    Amount = 20,
+                    MerchantId = (int)Merchant.PAYPAL,
+                    UserId = DEFAULT_USER_ID
+                }
+            };
+
+            var slots = new List<Slot>()
+            {
+                new Slot()
+                {
+                    Id = 1,
+                    Name = "Slot 1"
+                },
+                new Slot()
+                {
+                    Id = 2,
+                    Name = "Slot 2"
+                }
+            };
+
+            var bets = new List<Bet>()
+            {
+                new Bet()
+                {
+                    Id = 1,
+                    Amount = 0.10,
+                    BetType = (int)BetType.NORMAL,
+                    CreatedOn = DateTime.Now,
+                    SlotId = slots[0].Id,
+                    UserId = DEFAULT_USER_ID,
+                    WinningAmount = 0,
+                    WinningBet = false,
+                },
+                new Bet()
+                {
+                    Id = 2,
+                    Amount = 0.10,
+                    BetType = (int)BetType.NORMAL,
+                    CreatedOn = DateTime.Now.AddSeconds(10),
+                    SlotId = slots[0].Id,
+                    UserId = DEFAULT_USER_ID,
+                    WinningAmount = 0.15,
+                    WinningBet = true,
+                },
+                new Bet()
+                {
+                    Id = 2,
+                    Amount = 0.10,
+                    BetType = (int)BetType.NORMAL,
+                    CreatedOn = DateTime.Now.AddSeconds(20),
+                    SlotId = slots[0].Id,
+                    UserId = DEFAULT_USER_ID,
+                    WinningAmount = 0,
+                    WinningBet = false,
+                },
+                new Bet()
+                {
+                    Id = 4,
+                    Amount = 0.20,
+                    BetType = (int)BetType.NORMAL,
+                    CreatedOn = DateTime.Now.AddSeconds(30),
+                    SlotId = slots[1].Id,
+                    UserId = DEFAULT_USER_ID,
+                    WinningAmount = 0,
+                    WinningBet = false,
+                },
+                new Bet()
+                {
+                    Id = 5,
+                    Amount = 0.20,
+                    BetType = (int)BetType.NORMAL,
+                    CreatedOn = DateTime.Now.AddSeconds(40),
+                    SlotId = slots[1].Id,
+                    UserId = DEFAULT_USER_ID,
+                    WinningAmount = 0.25,
+                    WinningBet = true,
+                },
+            };
+
+            var betHistoric = new List<UserBetHistoricResponse>();
+
+            bets.GroupBy(g => g.SlotId).ToList().ForEach((group) =>
+            {
+                betHistoric.Add(new UserBetHistoricResponse()
+                {
+                    Bets = bets.Select(s => new BetHistoricResponse()
+                    {
+                        Id = s.Id,
+                        BetAmount = s.Amount,
+                        WinningBet = s.WinningBet,
+                        WinningAmount = s.WinningAmount,
+                        SlotId = s.SlotId,
+                        CreatedOn = s.CreatedOn,
+                        BetType = s.BetType,
+                    }).ToList(),
+                    SlotName = slots.FirstOrDefault(w => w.Id == group.Key).Name,
+                });
+            });
+
+            var depositHistoric = deposits.Select(s => new DepositHistoricResponse()
+            {
+                Id = s.Id,
+                Amount = s.Amount,
+                MerchantId = s.MerchantId
+            }).ToList();
+
+            var user = new User()
+            {
+                Id = DEFAULT_USER_ID,
+                Email = DEFAULT_EMAIL,
+                Username = DEFAULT_USERNAME,
+                CreatedOn = DateTime.Now,
+            };
+
+            var currentBalance = new BalanceResponse()
+            {
+                CurrentBalance = 24.33
+            };
+
+            var expectedUserProfile = new ProfileResponse()
+            {
+                Username = DEFAULT_USERNAME,
+                Email = DEFAULT_EMAIL,
+                BetHistoric = betHistoric,
+                DepositHistoric = depositHistoric,
+                CurrentBalance = currentBalance,
+            };
+
+            _mockTokenService.Setup(x => x.GetCurrentUserId()).Returns(DEFAULT_USER_ID);
+            _mockUserRepository.Setup(x => x.GetByIdAsync(DEFAULT_USER_ID)).ReturnsAsync(user);
+            _mockBetService.Setup(x => x.GetCurrentUserBetHistoricAsync()).ReturnsAsync(betHistoric);
+            _mockDepositService.Setup(x => x.GetDepositsForCurrentUserAsync()).ReturnsAsync(depositHistoric);
+            _mockBalanceService.Setup(x => x.GetCurrentUserCurrentBalanceAsync()).ReturnsAsync(currentBalance);
+
+            var result = await _userService.GetCurrentUserProfile();
+
+            result.Should().BeEquivalentTo(expectedUserProfile);
         }
     }
 }

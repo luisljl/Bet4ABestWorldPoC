@@ -110,7 +110,7 @@ namespace Bet4ABestWorldPoC.Services.Tests
         [Theory]
         [InlineData(24.3)]
         [InlineData(11.25)]
-        public async Task Return_user_current_balance(double expectedAmount)
+        public async Task Return_current_user_current_balance(double expectedAmount)
         {
             var expectedBalance = new Balance()
             {
@@ -118,9 +118,10 @@ namespace Bet4ABestWorldPoC.Services.Tests
                 UserId = DEFAULT_USER_ID
             };
 
+            _mockTokenService.Setup(x => x.GetCurrentUserId()).Returns(DEFAULT_USER_ID);
             _mockBalanceRepository.Setup(x => x.FirstOrDefaultAsync(w => w.UserId == DEFAULT_USER_ID)).ReturnsAsync(expectedBalance);
 
-            var result = await _balanceService.GetUserCurrentBalanceAsync(DEFAULT_USER_ID);
+            var result = await _balanceService.GetCurrentUserCurrentBalanceAsync();
 
             result.CurrentBalance.Should().Be(expectedAmount);
         }

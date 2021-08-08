@@ -8,7 +8,6 @@ using Bet4ABestWorldPoC.Services.Responses;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Bet4ABestWorldPoC.Services
@@ -39,7 +38,7 @@ namespace Bet4ABestWorldPoC.Services
             {
                 await _balanceService.IncreaseBalanceAsync(newBet.WinningAmount);
             }
-            var currentBalance = await _balanceService.GetUserCurrentBalanceAsync(currentUserId);
+            var currentBalance = await _balanceService.GetCurrentUserCurrentBalanceAsync();
             return new BetResponse()
             {
                 WinningBet = newBet.WinningBet,
@@ -48,42 +47,42 @@ namespace Bet4ABestWorldPoC.Services
             };
         }
 
-        public async Task<UserBetHistoryResponse> GetCurrentUserBetHistoryBySlotAsync(int slotId)
+        public async Task<UserBetHistoricResponse> GetCurrentUserBetHistoricBySlotAsync(int slotId)
         {
             var currentUserId = _tokenService.GetCurrentUserId();
             var bets = await _betRepository.GetAllWhereAsync(w => w.UserId == currentUserId && w.SlotId == slotId);
 
-            return new UserBetHistoryResponse()
+            return new UserBetHistoricResponse()
             {
-                Bets = MapListOfBetToListOfBetHistoryResponse(bets),
+                Bets = MapListOfBetToListOfBetHistoricResponse(bets),
                 SlotName = await _slotService.GetSlotNameById(slotId)
             };
         }
 
-        public async Task<UserBetHistoryResponse> GetCurrentUserWinningBetHistoryBySlotAsync(int slotId)
+        public async Task<UserBetHistoricResponse> GetCurrentUserWinningBetHistoricBySlotAsync(int slotId)
         {
             var currentUserId = _tokenService.GetCurrentUserId();
             var bets = await _betRepository.GetAllWhereAsync(w => w.UserId == currentUserId && w.SlotId == slotId && w.WinningBet);
 
-            return new UserBetHistoryResponse()
+            return new UserBetHistoricResponse()
             {
-                Bets = MapListOfBetToListOfBetHistoryResponse(bets),
+                Bets = MapListOfBetToListOfBetHistoricResponse(bets),
                 SlotName = await _slotService.GetSlotNameById(slotId)
             };
         }
 
-        public async Task<List<UserBetHistoryResponse>> GetCurrentUserBetHistoryAsync()
+        public async Task<List<UserBetHistoricResponse>> GetCurrentUserBetHistoricAsync()
         {
             var currentUserId = _tokenService.GetCurrentUserId();
             var bets = await _betRepository.GetAllWhereAsync(w => w.UserId == currentUserId);
 
-            var groupedBets = new List<UserBetHistoryResponse>();
+            var groupedBets = new List<UserBetHistoricResponse>();
 
             bets.GroupBy(g => g.SlotId).ToList().ForEach(async (group) =>
             {
-                groupedBets.Add(new UserBetHistoryResponse()
+                groupedBets.Add(new UserBetHistoricResponse()
                 {
-                    Bets = MapListOfBetToListOfBetHistoryResponse(group.ToList()),
+                    Bets = MapListOfBetToListOfBetHistoricResponse(group.ToList()),
                     SlotName = await _slotService.GetSlotNameById(group.Key),
                 });
             });
@@ -128,9 +127,9 @@ namespace Bet4ABestWorldPoC.Services
             return amount * new Random().Next(1, 10);
         }
 
-        private List<BetHistoryResponse> MapListOfBetToListOfBetHistoryResponse(List<Bet> bets)
+        private List<BetHistoricResponse> MapListOfBetToListOfBetHistoricResponse(List<Bet> bets)
         {
-            return bets.Select(s => new BetHistoryResponse()
+            return bets.Select(s => new BetHistoricResponse()
             {
                 Id = s.Id,
                 BetAmount = s.Amount,

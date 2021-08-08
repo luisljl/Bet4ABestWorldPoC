@@ -4,6 +4,7 @@ using Bet4ABestWorldPoC.Services.Enums;
 using Bet4ABestWorldPoC.Services.Exceptions;
 using Bet4ABestWorldPoC.Services.Interfaces;
 using Bet4ABestWorldPoC.Services.Request;
+using Bet4ABestWorldPoC.Services.Responses;
 using FluentAssertions;
 using Moq;
 using System;
@@ -125,13 +126,20 @@ namespace Bet4ABestWorldPoC.Services.Tests
                 }
             };
 
-            var expectedDeposit = deposits.Where(w => w.UserId == userId).ToList();
+            var userDeposits = deposits.Where(w => w.UserId == userId).ToList();
+            var expectedDeposits = userDeposits.Select(s => new DepositHistoricResponse()
+            {
+                Id = s.Id,
+                Amount = s.Amount,
+                MerchantId = s.MerchantId
+            });
+            _mockTokenService.Setup(x => x.GetCurrentUserId()).Returns(userId);
 
-            _mockDepositRepository.Setup(x => x.GetAllWhereAsync(w => w.UserId == userId)).ReturnsAsync(expectedDeposit);
+            _mockDepositRepository.Setup(x => x.GetAllWhereAsync(w => w.UserId == userId)).ReturnsAsync(userDeposits);
 
-            var result = await _depositService.GetDepositsForUserAsync(userId);
+            var result = await _depositService.GetDepositsForCurrentUserAsync();
 
-            result.Should().HaveCount(expectedDeposit.Count);
+            result.Should().BeEquivalentTo(expectedDeposits);
         }
 
     }

@@ -20,7 +20,7 @@ namespace Bet4ABestWorldPoC.Services.Tests
         private const int DEFAULT_SLOT_ID = 1;
         private const int DEFAULT_USER_ID = 1;
 
-        private readonly List<Bet> DEFAULT_BETS = new List<Bet>()
+        private readonly List<Bet> DEFAULT_BETS = new()
         {
             new Bet()
             {
@@ -127,7 +127,7 @@ namespace Bet4ABestWorldPoC.Services.Tests
             };
 
             _mockTokenService.Setup(x => x.GetCurrentUserId()).Returns(DEFAULT_USER_ID);
-            _mockBalanceService.Setup(x => x.GetUserCurrentBalanceAsync(DEFAULT_USER_ID)).ReturnsAsync(expectedBalance);
+            _mockBalanceService.Setup(x => x.GetCurrentUserCurrentBalanceAsync()).ReturnsAsync(expectedBalance);
 
             Func<Task> action = async () => await _betService.Bet(request);
 
@@ -140,7 +140,7 @@ namespace Bet4ABestWorldPoC.Services.Tests
             var request = new BetRequest(DEFAULT_SLOT_ID, 0.10, (int)BetType.NORMAL);
 
             _mockTokenService.Setup(x => x.GetCurrentUserId()).Returns(DEFAULT_USER_ID);
-            _mockBalanceService.Setup(x => x.GetUserCurrentBalanceAsync(DEFAULT_USER_ID)).ReturnsAsync(new BalanceResponse() { CurrentBalance = 10.30 });
+            _mockBalanceService.Setup(x => x.GetCurrentUserCurrentBalanceAsync()).ReturnsAsync(new BalanceResponse() { CurrentBalance = 10.30 });
 
             var result = await _betService.Bet(request);
 
@@ -159,9 +159,9 @@ namespace Bet4ABestWorldPoC.Services.Tests
 
             var slot1Name = "Slot 1";
 
-            var expectedBet = new UserBetHistoryResponse()
+            var expectedBet = new UserBetHistoricResponse()
             {
-                Bets = userBets.Select(s => new BetHistoryResponse()
+                Bets = userBets.Select(s => new BetHistoricResponse()
                 {
                     Id = s.Id,
                     BetAmount = s.Amount,
@@ -178,7 +178,7 @@ namespace Bet4ABestWorldPoC.Services.Tests
             _mockBetRepository.Setup(x => x.GetAllWhereAsync(w => w.UserId == DEFAULT_USER_ID && w.SlotId == DEFAULT_SLOT_ID)).ReturnsAsync(userBets);
             _mockSlotService.Setup(x => x.GetSlotNameById(DEFAULT_SLOT_ID)).ReturnsAsync(slot1Name);
 
-            var result = await _betService.GetCurrentUserBetHistoryBySlotAsync(DEFAULT_SLOT_ID);
+            var result = await _betService.GetCurrentUserBetHistoricBySlotAsync(DEFAULT_SLOT_ID);
 
             result.Should().BeEquivalentTo(expectedBet);
         }
@@ -190,9 +190,9 @@ namespace Bet4ABestWorldPoC.Services.Tests
 
             var slot1Name = "Slot 1";
 
-            var expectedBet = new UserBetHistoryResponse()
+            var expectedBet = new UserBetHistoricResponse()
             {
-                Bets = userBets.Select(s => new BetHistoryResponse()
+                Bets = userBets.Select(s => new BetHistoricResponse()
                 {
                     Id = s.Id,
                     BetAmount = s.Amount,
@@ -209,7 +209,7 @@ namespace Bet4ABestWorldPoC.Services.Tests
             _mockBetRepository.Setup(x => x.GetAllWhereAsync(w => w.UserId == DEFAULT_USER_ID && w.SlotId == DEFAULT_SLOT_ID && w.WinningBet)).ReturnsAsync(userBets);
             _mockSlotService.Setup(x => x.GetSlotNameById(DEFAULT_SLOT_ID)).ReturnsAsync(slot1Name);
 
-            var result = await _betService.GetCurrentUserWinningBetHistoryBySlotAsync(DEFAULT_SLOT_ID);
+            var result = await _betService.GetCurrentUserWinningBetHistoricBySlotAsync(DEFAULT_SLOT_ID);
 
             result.Should().BeEquivalentTo(expectedBet);
         }
@@ -231,12 +231,12 @@ namespace Bet4ABestWorldPoC.Services.Tests
                 Name = "Slot 2"
             };
 
-            var expectedBets = new List<UserBetHistoryResponse>()
+            var expectedBets = new List<UserBetHistoricResponse>()
             {
 
-                new UserBetHistoryResponse()
+                new UserBetHistoricResponse()
                 {
-                    Bets = userBets.Where(w => w.SlotId == slot1.Id).Select(s => new BetHistoryResponse()
+                    Bets = userBets.Where(w => w.SlotId == slot1.Id).Select(s => new BetHistoricResponse()
                     {
                         Id = s.Id,
                         BetAmount = s.Amount,
@@ -248,9 +248,9 @@ namespace Bet4ABestWorldPoC.Services.Tests
                     }).ToList(),
                     SlotName = slot1.Name,
                 },
-                new UserBetHistoryResponse()
+                new UserBetHistoricResponse()
                 {
-                    Bets = userBets.Where(w => w.SlotId == slot2.Id).Select(s => new BetHistoryResponse()
+                    Bets = userBets.Where(w => w.SlotId == slot2.Id).Select(s => new BetHistoricResponse()
                     {
                         Id = s.Id,
                         BetAmount = s.Amount,
@@ -269,7 +269,7 @@ namespace Bet4ABestWorldPoC.Services.Tests
             _mockSlotService.Setup(x => x.GetSlotNameById(slot1.Id)).ReturnsAsync(slot1.Name);
             _mockSlotService.Setup(x => x.GetSlotNameById(slot2.Id)).ReturnsAsync(slot2.Name);
 
-            var result = await _betService.GetCurrentUserBetHistoryAsync();
+            var result = await _betService.GetCurrentUserBetHistoricAsync();
 
             result.Should().BeEquivalentTo(expectedBets);
             

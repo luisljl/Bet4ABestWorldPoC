@@ -48,8 +48,10 @@ namespace Bet4ABestWorldPoC.Services
             await _balanceRepository.UpdateAsync(balance);
         }
 
-        public async Task<BalanceResponse> GetUserCurrentBalanceAsync(int userId)
+        public async Task<BalanceResponse> GetCurrentUserCurrentBalanceAsync()
         {
+            var userId = _tokenService.GetCurrentUserId();
+
             var balance = await _balanceRepository.FirstOrDefaultAsync(w => w.UserId == userId);
 
             return new BalanceResponse()

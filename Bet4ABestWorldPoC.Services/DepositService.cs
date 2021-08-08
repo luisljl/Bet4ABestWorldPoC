@@ -4,8 +4,10 @@ using Bet4ABestWorldPoC.Services.Enums;
 using Bet4ABestWorldPoC.Services.Exceptions;
 using Bet4ABestWorldPoC.Services.Interfaces;
 using Bet4ABestWorldPoC.Services.Request;
+using Bet4ABestWorldPoC.Services.Responses;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Bet4ABestWorldPoC.Services
@@ -28,6 +30,18 @@ namespace Bet4ABestWorldPoC.Services
             var newDeposit = MapNewDepositFromRequest(request, userId);
 
             await _depositRepository.CreateAsync(newDeposit);
+        }
+
+        public async Task<List<DepositHistoricResponse>> GetDepositsForCurrentUserAsync()
+        {
+            var currentUser = _tokenService.GetCurrentUserId();
+            var deposits = await _depositRepository.GetAllWhereAsync(w => w.UserId == currentUser);
+            return deposits.Select(s => new DepositHistoricResponse()
+            {
+                Id = s.Id,
+                Amount = s.Amount,
+                MerchantId = s.MerchantId
+            }).ToList();
         }
 
         private void ValidateDepositRequest(DepositRequest request)
@@ -56,11 +70,6 @@ namespace Bet4ABestWorldPoC.Services
                 UserId = userId,
                 MerchantId = request.MerchantId
             };
-        }
-
-        public async Task<List<Deposit>> GetDepositsForUserAsync(int userId)
-        {
-            return await _depositRepository.GetAllWhereAsync(w => w.UserId == userId);
         }
     }
 }

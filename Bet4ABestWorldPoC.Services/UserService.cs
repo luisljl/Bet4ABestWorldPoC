@@ -2,6 +2,8 @@
 using Bet4ABestWorldPoC.Repositories.Interfaces;
 using Bet4ABestWorldPoC.Services.Exceptions;
 using Bet4ABestWorldPoC.Services.Interfaces;
+using Bet4ABestWorldPoC.Services.Responses;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Bet4ABestWorldPoC.Services
@@ -10,11 +12,17 @@ namespace Bet4ABestWorldPoC.Services
     {
         private readonly IUserRepository _userRepository;
         private readonly IBalanceService _balanceService;
-        
-        public UserService(IUserRepository userRepository, IBalanceService balanceService)
+        private readonly ITokenService _tokenService;
+        private readonly IDepositService _depositService;
+        private readonly IBetService _BetService;
+
+        public UserService(IUserRepository userRepository, IBalanceService balanceService, ITokenService tokenService, IBetService betService, IDepositService depositService)
         {
             _userRepository = userRepository;
             _balanceService = balanceService;
+            _tokenService = tokenService;
+            _BetService = betService;
+            _depositService = depositService;
         }
 
         public async Task CreateAsync(User newUser)
@@ -38,6 +46,26 @@ namespace Bet4ABestWorldPoC.Services
                 throw new UserNotFoundException();
             }
             return user;
+        }
+
+        public async Task<ProfileResponse> GetCurrentUserProfile()
+        {
+            var currentUserId = _tokenService.GetCurrentUserId();
+            var currentUser = await GetByIdAsync(currentUserId);
+            var betHistoric = await _BetService.GetCurrentUserBetHistoricAsync();
+            var depositHistoric = await _depositService.GetDepositsForCurrentUserAsync();
+            var currentBalance = await _balanceService.GetCurrentUserCurrentBalanceAsync();
+
+            var response = new ProfileResponse()
+            {
+                Email = currentUser.Email,
+                Username = currentUser.Username,
+                BetHistoric = betHistoric ?? new List<UserBetHistoricResponse>(),
+                DepositHistoric = depositHistoric ?? new List<DepositHistoricResponse>(),
+                CurrentBalance = currentBalance,
+            };
+
+            return response;
         }
 
         public async Task<User> GetUserByUsernameAsync(string username)
