@@ -9,6 +9,6 @@ namespace Bet4ABestWorldPoC.Repositories.Interfaces
     {
         Task<User> GetByIdAsync(int id);
         Task<User> FirstOrDefaultAsync(Expression<Func<User, bool>> predicate);
-        Task AddAsync(User user);
+        Task CreateAsync(User user);
     }
 }
