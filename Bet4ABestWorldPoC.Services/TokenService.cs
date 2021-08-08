@@ -60,11 +60,24 @@ namespace Bet4ABestWorldPoC.Services
             {
                 throw new InvalidTokenException();
             }
-            await _blackListTokenRepository.AddAsync(new BlackListToken()
+            await _blackListTokenRepository.CreateAsync(new BlackListToken()
             {
                 CreatedOn = DateTime.Now,
                 InvalidToken = token
             });
+        }
+
+        public async Task DeleteInvalidTokenAsync(string token)
+        {
+            if (string.IsNullOrWhiteSpace(token))
+            {
+                throw new InvalidTokenException();
+            }
+            var tokenEntity = await _blackListTokenRepository.GetAsync(token);
+            if (tokenEntity != null)
+            {
+                await _blackListTokenRepository.DeleteAsync(tokenEntity);
+            }
         }
 
         public async Task<BlackListToken> GetInvalidTokenAsync(string token)

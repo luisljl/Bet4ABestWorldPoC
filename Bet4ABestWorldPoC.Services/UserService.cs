@@ -33,7 +33,7 @@ namespace Bet4ABestWorldPoC.Services
             {
                 throw new UserAlreadyExistsException();
             }
-            await _userRepository.AddAsync(newUser);
+            await _userRepository.CreateAsync(newUser);
 
             await _balanceService.CreateAsync(newUser.Id);
         }

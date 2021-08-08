@@ -88,6 +88,24 @@ namespace Bet4ABestWorldPoC.Services.Tests
         }
 
         [Fact]
+        public void Not_throw_a_exception_when_a_blacklist_token_does_not_exists_and_want_to_delete()
+        {
+            _mockBlackListTokenRepository.Setup(x => x.GetAsync(DEFAULT_TOKEN)).ReturnsAsync(null as BlackListToken);
+
+            Func<Task> action = async () => await _tokenService.DeleteInvalidTokenAsync(DEFAULT_TOKEN);
+
+            action.Should().NotThrow<Exception>();
+        }
+
+        [Fact]
+        public void Not_throw_a_exception_when_a_blacklist_token_is_deleted()
+        {
+            Func<Task> action = async () => await _tokenService.DeleteInvalidTokenAsync(DEFAULT_TOKEN);
+
+            action.Should().NotThrow<Exception>();
+        }
+
+        [Fact]
         public void Throw_a_invalid_token_exception_when_token_is_null_or_empty_when_is_added_to_a_blacklist()
         {
             Func<Task> action = async () => await _tokenService.InvalidateTokenAsync(null);
