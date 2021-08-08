@@ -1,0 +1,15 @@
+version: '3.4'
+
+services:
+  bet4abestworldpoc.api:
+    image: ${DOCKER_REGISTRY-}bet4abestworldpocapi
+    build:
+      context: .
+      dockerfile: Bet4ABestWorldPoC.API/Dockerfile
+    depends_on:
+      - db
+  db:
+    image: "mcr.microsoft.com/mssql/server:2017-latest"
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=bet4poc!Password

@@ -15,6 +15,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bet4ABestWorldPoC.Shared", 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{B3667E18-73A1-4684-8340-9A0AAA091A2D}"
 EndProject
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{3C2AC834-0B37-4539-9A37-C3DDBC0866EE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -41,6 +43,10 @@ Global
 		{4A5281B5-EAB5-4EFA-BA89-30C6E2A0B857}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4A5281B5-EAB5-4EFA-BA89-30C6E2A0B857}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4A5281B5-EAB5-4EFA-BA89-30C6E2A0B857}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3C2AC834-0B37-4539-9A37-C3DDBC0866EE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3C2AC834-0B37-4539-9A37-C3DDBC0866EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3C2AC834-0B37-4539-9A37-C3DDBC0866EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3C2AC834-0B37-4539-9A37-C3DDBC0866EE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
