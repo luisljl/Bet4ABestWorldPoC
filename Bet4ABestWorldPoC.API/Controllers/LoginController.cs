@@ -9,8 +9,7 @@ namespace Bet4ABestWorldPoC.API.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class WeatherForecastController : ControllerBase
+    public class LoginController : ControllerBase
     {
-
     }
 }

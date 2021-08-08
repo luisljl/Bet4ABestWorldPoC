@@ -1,4 +1,8 @@
 using Bet4ABestWorldPoC.Repositories;
+using Bet4ABestWorldPoC.Repositories.Interfaces;
+using Bet4ABestWorldPoC.Repositories.Repositories;
+using Bet4ABestWorldPoC.Services;
+using Bet4ABestWorldPoC.Services.Interfaces;
 using Bet4ABestWorldPoC.Shared.Settings;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -38,6 +42,21 @@ namespace Bet4ABestWorldPoC.API
 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
+            // Repositories
+            services.AddTransient<IUserRepository, UserRepository>();
+            services.AddTransient<IBetRepository, BetRepository>();
+            services.AddTransient<IDepositRepository, DepositRepository>();
+            services.AddTransient<IBlackListTokenRepository, BlackListTokenRepository>();
+            services.AddTransient<ISlotRepository, SlotRepository>();
+            services.AddTransient<IBalanceRepository, BalanceRepository>();
+            // Services
+            services.AddTransient<IUserService, UserService>();
+            services.AddTransient<IBetService, BetService>();
+            services.AddTransient<IDepositService, DepositService>();
+            services.AddTransient<ISlotService, SlotService>();
+            services.AddTransient<IBalanceService, BalanceService>();
+            services.AddTransient<ITokenService, TokenService>();
+            
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {

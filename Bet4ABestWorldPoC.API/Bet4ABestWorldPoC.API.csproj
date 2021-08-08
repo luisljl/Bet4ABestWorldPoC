@@ -15,6 +15,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Bet4ABestWorldPoC.Repositories\Bet4ABestWorldPoC.Repositories.csproj" />
+    <ProjectReference Include="..\Bet4ABestWorldPoC.Services\Bet4ABestWorldPoC.Services.csproj" />
     <ProjectReference Include="..\Bet4ABestWorldPoC.Utilities\Bet4ABestWorldPoC.Shared.csproj" />
   </ItemGroup>
 
