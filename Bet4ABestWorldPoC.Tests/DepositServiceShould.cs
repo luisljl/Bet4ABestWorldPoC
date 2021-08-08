@@ -19,7 +19,6 @@ namespace Bet4ABestWorldPoC.Services.Tests
         private const int DEFAULT_ID = 1;
 
         private readonly Mock<ITokenService> _mockTokenService;
-        private readonly Mock<IUserService> _mockUserService;
         private readonly Mock<IDepositRepository> _mockDepositRepository;
 
         private readonly DepositService _depositService;
@@ -27,10 +26,9 @@ namespace Bet4ABestWorldPoC.Services.Tests
         public DepositServiceShould()
         {
             _mockTokenService = new Mock<ITokenService>();
-            _mockUserService = new Mock<IUserService>();
             _mockDepositRepository = new Mock<IDepositRepository>();
 
-            _depositService = new DepositService(_mockTokenService.Object, _mockUserService.Object, _mockDepositRepository.Object);
+            _depositService = new DepositService(_mockTokenService.Object, _mockDepositRepository.Object);
         }
 
         [Fact]
@@ -45,7 +43,7 @@ namespace Bet4ABestWorldPoC.Services.Tests
 
 
         [Fact]
-        public void Throw_invalid_merchant_id_if_merchant_is_not_valid()
+        public void Throw_invalid_merchant_if_merchant_is_not_valid()
         {
             var inventedMerchantId = 3;
 
@@ -53,7 +51,7 @@ namespace Bet4ABestWorldPoC.Services.Tests
 
             Func<Task> action = async () => await _depositService.DepositAsync(request);
 
-            action.Should().Throw<InvalidMerchantIdException>();
+            action.Should().Throw<InvalidMerchantException>();
         }
 
         [Fact]
@@ -69,8 +67,6 @@ namespace Bet4ABestWorldPoC.Services.Tests
             };
 
             _mockTokenService.Setup(x => x.GetCurrentUserId()).Returns(DEFAULT_ID);
-
-            _mockUserService.Setup(x => x.GetByIdAsync(DEFAULT_ID)).ReturnsAsync(user);
 
             Func<Task> action = async () => await _depositService.DepositAsync(request);
 

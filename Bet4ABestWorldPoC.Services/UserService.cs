@@ -9,10 +9,12 @@ namespace Bet4ABestWorldPoC.Services
     public class UserService : IUserService
     {
         private readonly IUserRepository _userRepository;
+        private readonly IBalanceService _balanceService;
         
-        public UserService(IUserRepository userRepository)
+        public UserService(IUserRepository userRepository, IBalanceService balanceService)
         {
             _userRepository = userRepository;
+            _balanceService = balanceService;
         }
 
         public async Task CreateAsync(User newUser)
@@ -24,6 +26,8 @@ namespace Bet4ABestWorldPoC.Services
                 throw new UserAlreadyExistsException();
             }
             await _userRepository.AddAsync(newUser);
+
+            await _balanceService.CreateAsync(newUser.Id);
         }
 
         public async Task<User> GetByIdAsync(int id)

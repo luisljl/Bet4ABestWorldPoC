@@ -2,7 +2,7 @@
 
 namespace Bet4ABestWorldPoC.Services.Exceptions
 {
-    public class InvalidMerchantIdException : Exception
+    public class InvalidBetDataException : Exception
     {
     }
 }

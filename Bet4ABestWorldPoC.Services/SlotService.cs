@@ -30,14 +30,20 @@ namespace Bet4ABestWorldPoC.Services
             return MapListSlotsToListSlotResponse(slots);
         }
 
-        public async Task<Slot> GetSlotByIdAsync(int id)
+        public async Task<Slot> GetSlotByIdAsync(int slotId)
         {
-            var slot = await _slotRepository.GetByIdAsync(id);
+            var slot = await _slotRepository.GetByIdAsync(slotId);
             if (slot == null)
             {
                 throw new SlotNotFoundException();
             }
             return slot;
+        }
+
+        public async Task<string> GetSlotNameById(int slotId)
+        {
+            var slot = await GetSlotByIdAsync(slotId);
+            return slot.Name;
         }
 
         private List<SlotResponse> MapListSlotsToListSlotResponse(List<Slot> slots)

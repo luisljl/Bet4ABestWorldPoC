@@ -9,6 +9,7 @@ namespace Bet4ABestWorldPoC.Services.Interfaces
     {
         Task<List<SlotResponse>> GetAllAsync();
         Task<List<SlotResponse>> GetAllSlotThatContainsNameAsync(string name);
-        Task<Slot> GetSlotByIdAsync(int id);
+        Task<Slot> GetSlotByIdAsync(int slotId);
+        Task<string> GetSlotNameById(int slotId);
     }
 }

@@ -8,6 +8,7 @@ using Bet4ABestWorldPoC.Repositories.Interfaces;
 using Moq;
 using Bet4ABestWorldPoC.Repositories.Entities;
 using System.Linq;
+using Bet4ABestWorldPoC.Services.Responses;
 
 namespace Bet4ABestWorldPoC.Services.Tests
 {
@@ -72,16 +73,27 @@ namespace Bet4ABestWorldPoC.Services.Tests
 
             var result = await _slotService.GetAllAsync();
 
-            result.Should().BeEquivalentTo(DEFAULT_SLOTS);
+            var expectedSlots = DEFAULT_SLOTS.Select(s => new SlotResponse()
+            {
+                Id = s.Id,
+                Name = s.Name
+            }).ToList();
+
+            result.Should().BeEquivalentTo(expectedSlots);
         }
 
         [Fact]
         public async void Return_a_list_of_slots_filtered_by_name()
         {
             var name = "name";
-            var expectedSlots = DEFAULT_SLOTS.Where(w => w.Name.Contains(name)).ToList();
+            var slots = DEFAULT_SLOTS.Where(w => w.Name.Contains(name)).ToList();
+            var expectedSlots = slots.Select(s => new SlotResponse()
+            {
+                Id = s.Id,
+                Name = s.Name,
+            }).ToList();
 
-            _mockSlotRepository.Setup(x => x.GetAllWhereAsync(w => w.Name.Contains(name))).ReturnsAsync(expectedSlots);
+            _mockSlotRepository.Setup(x => x.GetAllWhereAsync(w => w.Name.Contains(name))).ReturnsAsync(slots);
 
             var result = await _slotService.GetAllSlotThatContainsNameAsync(name);
 

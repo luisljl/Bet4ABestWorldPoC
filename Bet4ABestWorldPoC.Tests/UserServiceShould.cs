@@ -6,6 +6,7 @@ using Moq;
 using Bet4ABestWorldPoC.Repositories.Interfaces;
 using System.Threading.Tasks;
 using Bet4ABestWorldPoC.Repositories.Entities;
+using Bet4ABestWorldPoC.Services.Interfaces;
 
 namespace Bet4ABestWorldPoC.Services.Tests
 {
@@ -16,13 +17,16 @@ namespace Bet4ABestWorldPoC.Services.Tests
         private const string DEFAULT_PASSWORD = "passtest";
 
         private readonly Mock<IUserRepository> _mockUserRepository;
+        private readonly Mock<IBalanceService> _mockBalanceService;
 
         private readonly UserService _userService;
 
         public UserServiceShould()
         {
             _mockUserRepository = new Mock<IUserRepository>();
-            _userService = new UserService(_mockUserRepository.Object);
+            _mockBalanceService = new Mock<IBalanceService>();
+
+            _userService = new UserService(_mockUserRepository.Object, _mockBalanceService.Object);
         }
 
         [Fact]
@@ -164,7 +168,7 @@ namespace Bet4ABestWorldPoC.Services.Tests
         }
 
         [Fact]
-        public void Not_throw_any_exception_when_user_is_created()
+        public void Not_throw_any_exception_when_user_and_balance_for_user_are_created()
         {
             var user = new User()
             {

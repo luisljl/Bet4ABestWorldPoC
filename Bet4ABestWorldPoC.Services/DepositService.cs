@@ -6,8 +6,6 @@ using Bet4ABestWorldPoC.Services.Interfaces;
 using Bet4ABestWorldPoC.Services.Request;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Bet4ABestWorldPoC.Services
@@ -15,13 +13,11 @@ namespace Bet4ABestWorldPoC.Services
     public class DepositService : IDepositService
     {
         private readonly ITokenService _tokenService;
-        private readonly IUserService _userService;
         private readonly IDepositRepository _depositRepository;
 
-        public DepositService(ITokenService tokenService, IUserService userService, IDepositRepository depositRepository)
+        public DepositService(ITokenService tokenService, IDepositRepository depositRepository)
         {
             _tokenService = tokenService;
-            _userService = userService;
             _depositRepository = depositRepository;
         }
 
@@ -29,9 +25,7 @@ namespace Bet4ABestWorldPoC.Services
         {
             ValidateDepositRequest(request);
             var userId = _tokenService.GetCurrentUserId();
-            var user = await _userService.GetByIdAsync(userId);
-
-            var newDeposit = MapNewDepositFromRequest(request, user);
+            var newDeposit = MapNewDepositFromRequest(request, userId);
 
             await _depositRepository.CreateAsync(newDeposit);
         }
@@ -42,6 +36,7 @@ namespace Bet4ABestWorldPoC.Services
             {
                 throw new InvalidDepositDataException();
             }
+
             if (request.Amount < 10)
             {
                 throw new MinimumAmountException();
@@ -49,16 +44,16 @@ namespace Bet4ABestWorldPoC.Services
 
             if (!Enum.IsDefined(typeof(Merchant), request.MerchantId))
             {
-                throw new InvalidMerchantIdException();
+                throw new InvalidMerchantException();
             }
         }
 
-        private Deposit MapNewDepositFromRequest(DepositRequest request, User user)
+        private Deposit MapNewDepositFromRequest(DepositRequest request, int userId)
         {
             return new Deposit()
             {
                 Amount = request.Amount,
-                UserId = user.Id,
+                UserId = userId,
                 MerchantId = request.MerchantId
             };
         }
