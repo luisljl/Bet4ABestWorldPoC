@@ -2,7 +2,7 @@
 
 namespace Bet4ABestWorldPoC.Services.Exceptions
 {
-    public class InvalidTokenException : Exception
+    public class InvalidTokenException : AppException
     {
     }
 }

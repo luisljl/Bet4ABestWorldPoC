@@ -2,7 +2,7 @@
 
 namespace Bet4ABestWorldPoC.Services.Exceptions
 {
-    public class InvalidCredentialsException : Exception
+    public class InvalidCredentialsException : AppException
     {
 
     }

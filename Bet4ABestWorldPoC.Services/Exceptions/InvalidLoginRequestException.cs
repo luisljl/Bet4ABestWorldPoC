@@ -2,7 +2,7 @@
 
 namespace Bet4ABestWorldPoC.Services.Exceptions
 {
-    public class InvalidLoginRequestException : Exception
+    public class InvalidLoginRequestException : AppException
     {
     }
 }

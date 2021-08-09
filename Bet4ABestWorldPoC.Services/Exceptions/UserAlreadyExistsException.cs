@@ -2,7 +2,7 @@
 
 namespace Bet4ABestWorldPoC.Services.Exceptions
 {
-    public class UserAlreadyExistsException : Exception
+    public class UserAlreadyExistsException : AppException
     {
 
     }

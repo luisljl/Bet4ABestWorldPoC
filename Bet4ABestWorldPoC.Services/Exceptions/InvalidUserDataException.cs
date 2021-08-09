@@ -2,7 +2,7 @@
 
 namespace Bet4ABestWorldPoC.Services.Exceptions
 {
-    public class InvalidUserDataException : Exception
+    public class InvalidUserDataException : AppException
     {
     }
 }

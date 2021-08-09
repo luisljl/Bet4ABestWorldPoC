@@ -2,7 +2,7 @@
 
 namespace Bet4ABestWorldPoC.Services.Exceptions
 {
-    public class InvalidBetTypeException : Exception
+    public class InvalidBetTypeException : AppException
     {
     }
 }

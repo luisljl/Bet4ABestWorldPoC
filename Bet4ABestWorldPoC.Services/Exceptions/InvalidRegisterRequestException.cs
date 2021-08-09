@@ -2,7 +2,7 @@
 
 namespace Bet4ABestWorldPoC.Services.Exceptions
 {
-    public class InvalidRegisterRequestException : Exception
+    public class InvalidRegisterRequestException : AppException
     {
     }
 }

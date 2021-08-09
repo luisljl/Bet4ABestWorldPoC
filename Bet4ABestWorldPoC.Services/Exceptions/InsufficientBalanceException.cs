@@ -2,7 +2,7 @@
 
 namespace Bet4ABestWorldPoC.Services.Exceptions
 {
-    public class InsufficientBalanceException : Exception
+    public class InsufficientBalanceException : AppException
     {
     }
 }

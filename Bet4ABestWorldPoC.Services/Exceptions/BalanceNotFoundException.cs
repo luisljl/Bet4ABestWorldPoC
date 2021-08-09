@@ -2,7 +2,7 @@
 
 namespace Bet4ABestWorldPoC.Services.Exceptions
 {
-    public class BalanceNotFoundException : Exception
+    public class BalanceNotFoundException : AppException
     {
     }
 }

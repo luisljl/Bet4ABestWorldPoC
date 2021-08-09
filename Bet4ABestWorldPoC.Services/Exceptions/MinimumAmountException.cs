@@ -2,7 +2,7 @@
 
 namespace Bet4ABestWorldPoC.Services.Exceptions
 {
-    public class MinimumAmountException : Exception
+    public class MinimumAmountException : AppException
     {
     }
 }

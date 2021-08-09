@@ -2,7 +2,7 @@
 
 namespace Bet4ABestWorldPoC.Services.Exceptions
 {
-    public class InvalidEmailException : Exception
+    public class InvalidEmailException : AppException
     {
 
     }

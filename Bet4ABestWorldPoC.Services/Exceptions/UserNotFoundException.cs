@@ -2,7 +2,7 @@
 
 namespace Bet4ABestWorldPoC.Services.Exceptions
 {
-    public class UserNotFoundException : Exception
+    public class UserNotFoundException : AppException
     {
 
     }

@@ -2,7 +2,7 @@
 
 namespace Bet4ABestWorldPoC.Services.Exceptions
 {
-    public class SlotNotFoundException : Exception
+    public class SlotNotFoundException : AppException
     {
     }
 }
