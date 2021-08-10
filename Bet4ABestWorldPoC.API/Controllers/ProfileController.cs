@@ -21,7 +21,7 @@ namespace Bet4ABestWorldPoC.API.Controllers
         public async Task<IActionResult> GetProfile()
         {
             var response = await _userService.GetCurrentUserProfile();
-            return Ok(response);
+            return Ok(new JsonResult(response));
         }
     }
 }

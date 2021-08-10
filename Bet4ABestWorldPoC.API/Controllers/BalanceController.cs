@@ -26,7 +26,7 @@ namespace Bet4ABestWorldPoC.API.Controllers
         public async Task<IActionResult> GetCurrentBalance()
         {
             var response = await _balanceService.GetCurrentUserCurrentBalanceAsync();
-            return Ok(response);
+            return Ok(new JsonResult(response));
         }
     }
 }

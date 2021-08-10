@@ -26,7 +26,7 @@ namespace Bet4ABestWorldPoC.API.Controllers
         public async Task<IActionResult> GetDeposits()
         {
             var result = await _depositService.GetDepositsForCurrentUserAsync();
-            return Ok(result);
+            return Ok(new JsonResult(result));
         }
 
         [HttpPost]

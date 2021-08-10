@@ -26,7 +26,7 @@ namespace Bet4ABestWorldPoC.API.Controllers
         public async Task<IActionResult> GetSlot(int slotId)
         {
             var response = await _slotService.GetSlotByIdAsync(slotId);
-            return Ok(response);
+            return Ok(new JsonResult(response));
         }
 
         [HttpGet("GetByName/{slotName}")]
@@ -34,7 +34,7 @@ namespace Bet4ABestWorldPoC.API.Controllers
         public async Task<IActionResult> GetSlotsByName(string slotName)
         {
             var response = await _slotService.GetAllSlotThatContainsNameAsync(slotName);
-            return Ok(response);
+            return Ok(new JsonResult(response));
         }
 
         [HttpGet]
@@ -42,7 +42,7 @@ namespace Bet4ABestWorldPoC.API.Controllers
         public async Task<IActionResult> GetAllSlots()
         {
             var response = await _slotService.GetAllAsync();
-            return Ok(response);
+            return Ok(new JsonResult(response));
         }
     }
 }

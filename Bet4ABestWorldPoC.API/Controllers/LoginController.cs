@@ -26,7 +26,7 @@ namespace Bet4ABestWorldPoC.API.Controllers
         public async Task<IActionResult> Login([FromBody] LoginRequest request)
         {
             var response = await _loginService.LoginAsync(request);
-            return Ok(response);
+            return Ok(new JsonResult(response));
         }
     }
 }
