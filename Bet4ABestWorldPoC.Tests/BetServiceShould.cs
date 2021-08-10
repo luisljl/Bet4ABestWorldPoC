@@ -126,6 +126,14 @@ namespace Bet4ABestWorldPoC.Services.Tests
                 CurrentBalance = 14.23
             };
 
+            var slot = new Slot()
+            {
+                Id = DEFAULT_SLOT_ID,
+                Name = "Slot 1",
+                RTP = 80,
+            };
+
+            _mockSlotService.Setup(x => x.GetSlotByIdAsync(DEFAULT_SLOT_ID)).ReturnsAsync(slot);
             _mockTokenService.Setup(x => x.GetCurrentUserId()).Returns(DEFAULT_USER_ID);
             _mockBalanceService.Setup(x => x.GetCurrentUserCurrentBalanceAsync()).ReturnsAsync(expectedBalance);
 
@@ -139,6 +147,14 @@ namespace Bet4ABestWorldPoC.Services.Tests
         {
             var request = new BetRequest(DEFAULT_SLOT_ID, 0.10, (int)BetType.NORMAL);
 
+            var slot = new Slot()
+            {
+                Id = DEFAULT_SLOT_ID,
+                Name = "Slot 1",
+                RTP = 80,
+            };
+
+            _mockSlotService.Setup(x => x.GetSlotByIdAsync(DEFAULT_SLOT_ID)).ReturnsAsync(slot);
             _mockTokenService.Setup(x => x.GetCurrentUserId()).Returns(DEFAULT_USER_ID);
             _mockBalanceService.Setup(x => x.GetCurrentUserCurrentBalanceAsync()).ReturnsAsync(new BalanceResponse() { CurrentBalance = 10.30 });
 

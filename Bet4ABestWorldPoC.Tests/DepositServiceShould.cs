@@ -21,6 +21,7 @@ namespace Bet4ABestWorldPoC.Services.Tests
 
         private readonly Mock<ITokenService> _mockTokenService;
         private readonly Mock<IDepositRepository> _mockDepositRepository;
+        private readonly Mock<IBalanceService> _mockBalanceService;
 
         private readonly DepositService _depositService;
 
@@ -28,8 +29,9 @@ namespace Bet4ABestWorldPoC.Services.Tests
         {
             _mockTokenService = new Mock<ITokenService>();
             _mockDepositRepository = new Mock<IDepositRepository>();
+            _mockBalanceService = new Mock<IBalanceService>();
 
-            _depositService = new DepositService(_mockTokenService.Object, _mockDepositRepository.Object);
+            _depositService = new DepositService(_mockTokenService.Object, _mockDepositRepository.Object, _mockBalanceService.Object);
         }
 
         [Fact]

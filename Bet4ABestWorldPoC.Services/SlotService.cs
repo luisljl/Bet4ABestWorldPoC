@@ -46,8 +46,10 @@ namespace Bet4ABestWorldPoC.Services
             return slot.Name;
         }
 
-        private List<SlotResponse> MapListSlotsToListSlotResponse(List<Slot> slots)
+        private List<SlotResponse> MapListSlotsToListSlotResponse(IEnumerable<Slot> slots)
         {
+            slots ??= Enumerable.Empty<Slot>();
+
             return slots.Select(s => new SlotResponse()
             {
                 Id = s.Id,

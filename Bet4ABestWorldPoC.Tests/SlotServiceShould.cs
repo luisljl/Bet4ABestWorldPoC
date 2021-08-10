@@ -9,6 +9,7 @@ using Moq;
 using Bet4ABestWorldPoC.Repositories.Entities;
 using System.Linq;
 using Bet4ABestWorldPoC.Services.Responses;
+using System.Linq.Expressions;
 
 namespace Bet4ABestWorldPoC.Services.Tests
 {
@@ -85,19 +86,11 @@ namespace Bet4ABestWorldPoC.Services.Tests
         [Fact]
         public async void Return_a_list_of_slots_filtered_by_name()
         {
-            var name = "name";
-            var slots = DEFAULT_SLOTS.Where(w => w.Name.Contains(name)).ToList();
-            var expectedSlots = slots.Select(s => new SlotResponse()
-            {
-                Id = s.Id,
-                Name = s.Name,
-            }).ToList();
+            var expectedName = "name";
 
-            _mockSlotRepository.Setup(x => x.GetAllWhereAsync(w => w.Name.Contains(name))).ReturnsAsync(slots);
+            await _slotService.GetAllSlotThatContainsNameAsync(expectedName);
 
-            var result = await _slotService.GetAllSlotThatContainsNameAsync(name);
-
-            result.Should().BeEquivalentTo(expectedSlots);
+            _mockSlotRepository.Verify(x => x.GetAllWhereAsync(w => w.Name.Contains(expectedName)), Times.Once);
         }
 
         [Fact]

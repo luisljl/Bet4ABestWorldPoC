@@ -16,11 +16,13 @@ namespace Bet4ABestWorldPoC.Services
     {
         private readonly ITokenService _tokenService;
         private readonly IDepositRepository _depositRepository;
+        private readonly IBalanceService _balanceService;
 
-        public DepositService(ITokenService tokenService, IDepositRepository depositRepository)
+        public DepositService(ITokenService tokenService, IDepositRepository depositRepository, IBalanceService balanceService)
         {
             _tokenService = tokenService;
             _depositRepository = depositRepository;
+            _balanceService = balanceService;
         }
 
         public async Task DepositAsync(DepositRequest request)
@@ -30,12 +32,19 @@ namespace Bet4ABestWorldPoC.Services
             var newDeposit = MapNewDepositFromRequest(request, userId);
 
             await _depositRepository.CreateAsync(newDeposit);
+            await _balanceService.IncreaseBalanceAsync(newDeposit.Amount);
         }
 
         public async Task<List<DepositHistoricResponse>> GetDepositsForCurrentUserAsync()
         {
             var currentUser = _tokenService.GetCurrentUserId();
             var deposits = await _depositRepository.GetAllWhereAsync(w => w.UserId == currentUser);
+
+            if (deposits == null)
+            {
+                return new List<DepositHistoricResponse>();
+            }
+
             return deposits.Select(s => new DepositHistoricResponse()
             {
                 Id = s.Id,

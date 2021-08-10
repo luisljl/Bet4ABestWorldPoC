@@ -32,7 +32,8 @@ namespace Bet4ABestWorldPoC.Services
             ValidateBetRequest(request);
             var currentUserId = _tokenService.GetCurrentUserId();
             await _balanceService.DecreaseBalanceAsync(request.Amount);
-            var newBet = MapNewBetFromRequest(request, currentUserId);
+            var slot = await _slotService.GetSlotByIdAsync(request.SlotId);
+            var newBet = MapNewBetFromRequest(request, currentUserId, slot);
             await _betRepository.CreateAsync(newBet);
             if (newBet.WinningBet)
             {
@@ -103,10 +104,10 @@ namespace Bet4ABestWorldPoC.Services
             }
         }
 
-        private Bet MapNewBetFromRequest(BetRequest request, int userId)
+        private Bet MapNewBetFromRequest(BetRequest request, int userId, Slot slot)
         {
             var winning = false;
-            if (new Random().Next(1, 100) < 20)
+            if (new Random().Next(1, 100) > slot.RTP)
             {
                 winning = true;
             }
@@ -127,8 +128,9 @@ namespace Bet4ABestWorldPoC.Services
             return amount * new Random().Next(1, 10);
         }
 
-        private List<BetHistoricResponse> MapListOfBetToListOfBetHistoricResponse(List<Bet> bets)
+        private List<BetHistoricResponse> MapListOfBetToListOfBetHistoricResponse(IEnumerable<Bet> bets)
         {
+            bets ??= Enumerable.Empty<Bet>();
             return bets.Select(s => new BetHistoricResponse()
             {
                 Id = s.Id,

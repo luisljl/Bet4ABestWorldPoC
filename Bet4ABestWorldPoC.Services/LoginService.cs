@@ -27,6 +27,12 @@ namespace Bet4ABestWorldPoC.Services
                 throw new InvalidCredentialsException();
             }
 
+            var invalidToken = await _tokenService.GetInvalidTokenAsyncByUserIdAsync(user.Id);
+            if (invalidToken != null)
+            {
+                await _tokenService.DeleteInvalidTokenAsync(user.Id);
+            }
+
             return new LoginResponse()
             {
                 Token = _tokenService.GenerateToken(user),

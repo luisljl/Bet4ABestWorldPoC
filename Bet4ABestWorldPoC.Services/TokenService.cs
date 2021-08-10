@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System;
+using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
@@ -54,39 +55,30 @@ namespace Bet4ABestWorldPoC.Services
             return tokenHandler.WriteToken(token);
         }
 
-        public async Task InvalidateTokenAsync(string token)
+        public async Task InvalidateTokenAsync(int userId)
         {
-            if (string.IsNullOrWhiteSpace(token))
-            {
-                throw new InvalidTokenException();
-            }
+            var token = GetCurrentUserToken();
+
             await _blackListTokenRepository.CreateAsync(new BlackListToken()
             {
                 CreatedOn = DateTime.Now,
-                InvalidToken = token
+                InvalidToken = token,
+                UserId = userId,
             });
         }
 
-        public async Task DeleteInvalidTokenAsync(string token)
+        public async Task DeleteInvalidTokenAsync(int userId)
         {
-            if (string.IsNullOrWhiteSpace(token))
-            {
-                throw new InvalidTokenException();
-            }
-            var tokenEntity = await _blackListTokenRepository.GetAsync(token);
+            var tokenEntity = await _blackListTokenRepository.FirstOrDefaultAsync(w => w.UserId == userId);
             if (tokenEntity != null)
             {
                 await _blackListTokenRepository.DeleteAsync(tokenEntity);
             }
         }
 
-        public async Task<BlackListToken> GetInvalidTokenAsync(string token)
+        public async Task<BlackListToken> GetInvalidTokenAsyncByUserIdAsync(int userId)
         {
-            if (string.IsNullOrWhiteSpace(token))
-            {
-                throw new InvalidTokenException();
-            }
-            return await _blackListTokenRepository.GetAsync(token);
+            return await _blackListTokenRepository.FirstOrDefaultAsync(w => w.UserId == userId);
         }
 
         public string GetCurrentUserToken()
@@ -96,29 +88,32 @@ namespace Bet4ABestWorldPoC.Services
 
         public int GetCurrentUserId()
         {
-            var idClaim = GetCurrentUser().Claims.Where(x => x.Type == ClaimTypes.NameIdentifier).FirstOrDefault();
+            var idClaim = GetCurrentUserClaims().Where(x => x.Type == "nameid").FirstOrDefault();
             return int.Parse(idClaim.Value);
         }
 
         public string GetCurrentUserEmail()
         {
-            var emailClaim = GetCurrentUser().Claims.Where(x => x.Type == ClaimTypes.Email).FirstOrDefault();
+            var emailClaim = GetCurrentUserClaims().Where(x => x.Type == "email").FirstOrDefault();
             return emailClaim.Value;
         }
 
         public string GetCurrentUserUsername()
         {
-            var usernameClaim = GetCurrentUser().Claims.Where(x => x.Type == ClaimTypes.Name).FirstOrDefault();
+            var usernameClaim = GetCurrentUserClaims().Where(x => x.Type == "name").FirstOrDefault();
             return usernameClaim.Value;
         }
 
-        private ClaimsIdentity GetCurrentUser()
+        private IEnumerable<Claim> GetCurrentUserClaims()
         {
-            if (string.IsNullOrEmpty(GetCurrentUserToken()))
+            var tokenEncoded = GetCurrentUserToken();
+            if (string.IsNullOrEmpty(tokenEncoded))
             {
                 throw new InvalidTokenException();
             }
-            return _httpContextAccessor.HttpContext.User.Identity as ClaimsIdentity;
+            var handler = new JwtSecurityTokenHandler();
+            var token = handler.ReadJwtToken(tokenEncoded);
+            return token.Claims;
         }
     }
 }

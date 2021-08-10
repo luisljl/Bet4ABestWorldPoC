@@ -9,6 +9,8 @@ namespace Bet4ABestWorldPoC.Repositories.Entities
     {
         [Key]
         public string InvalidToken { get; set; }
+        [ForeignKey("User")]
+        public int UserId { get; set; }
         public DateTime CreatedOn { get; set; }
     }
 }

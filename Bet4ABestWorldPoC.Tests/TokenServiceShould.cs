@@ -17,7 +17,7 @@ namespace Bet4ABestWorldPoC.Services.Tests
     {
         private const int DEFAULT_ID = 1;
         private const string DEFAULT_EMAIL = "test@email.test";
-        private const string DEFAULT_USERNAME = "userTest";
+        private const string DEFAULT_USERNAME = "John Doe";
         private const string DEFAULT_JWT_SECRET = "F)J@NcRfUjWnZr4u7x!A%D*G-KaPdSgV";
         private const string DEFAULT_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.Nkuy9Br6gKbhxZOEUehjSxOIVING6pXplakVz9rATwg";
 
@@ -48,9 +48,9 @@ namespace Bet4ABestWorldPoC.Services.Tests
             _mockBlackListTokenRepository = new Mock<IBlackListTokenRepository>();
             _mockHttpContextAccessor = new Mock<IHttpContextAccessor>();
 
-            DEFAULT_CLAIMS.AddClaim(new Claim(ClaimTypes.NameIdentifier, DEFAULT_ID.ToString()));
-            DEFAULT_CLAIMS.AddClaim(new Claim(ClaimTypes.Name, DEFAULT_USERNAME.ToString()));
-            DEFAULT_CLAIMS.AddClaim(new Claim(ClaimTypes.Email, DEFAULT_EMAIL));
+            DEFAULT_CLAIMS.AddClaim(new Claim("nameid", DEFAULT_ID.ToString()));
+            DEFAULT_CLAIMS.AddClaim(new Claim("name", DEFAULT_USERNAME.ToString()));
+            DEFAULT_CLAIMS.AddClaim(new Claim("email", DEFAULT_EMAIL));
 
             _tokenService = new TokenService(_appSettings, _mockBlackListTokenRepository.Object, _mockHttpContextAccessor.Object);
         }
@@ -82,7 +82,9 @@ namespace Bet4ABestWorldPoC.Services.Tests
         [Fact]
         public void Not_throw_a_exception_when_a_blacklist_token_is_created()
         {
-            Func<Task> action = async () => await _tokenService.InvalidateTokenAsync(DEFAULT_TOKEN);
+            _mockHttpContextAccessor.Setup(x => x.HttpContext.Request.Headers["Authorization"]).Returns(DEFAULT_TOKEN);
+
+            Func<Task> action = async () => await _tokenService.InvalidateTokenAsync(DEFAULT_ID);
 
             action.Should().NotThrow<Exception>();
         }
@@ -90,9 +92,9 @@ namespace Bet4ABestWorldPoC.Services.Tests
         [Fact]
         public void Not_throw_a_exception_when_a_blacklist_token_does_not_exists_and_want_to_delete()
         {
-            _mockBlackListTokenRepository.Setup(x => x.GetAsync(DEFAULT_TOKEN)).ReturnsAsync(null as BlackListToken);
+            _mockBlackListTokenRepository.Setup(x => x.FirstOrDefaultAsync(w => w.UserId == DEFAULT_ID)).ReturnsAsync(null as BlackListToken);
 
-            Func<Task> action = async () => await _tokenService.DeleteInvalidTokenAsync(DEFAULT_TOKEN);
+            Func<Task> action = async () => await _tokenService.DeleteInvalidTokenAsync(DEFAULT_ID);
 
             action.Should().NotThrow<Exception>();
         }
@@ -100,33 +102,17 @@ namespace Bet4ABestWorldPoC.Services.Tests
         [Fact]
         public void Not_throw_a_exception_when_a_blacklist_token_is_deleted()
         {
-            Func<Task> action = async () => await _tokenService.DeleteInvalidTokenAsync(DEFAULT_TOKEN);
+            Func<Task> action = async () => await _tokenService.DeleteInvalidTokenAsync(DEFAULT_ID);
 
             action.Should().NotThrow<Exception>();
         }
 
         [Fact]
-        public void Throw_a_invalid_token_exception_when_token_is_null_or_empty_when_is_added_to_a_blacklist()
-        {
-            Func<Task> action = async () => await _tokenService.InvalidateTokenAsync(null);
-
-            action.Should().Throw<InvalidTokenException>();
-        }
-
-        [Fact]
-        public void Throw_a_invalid_token_exception_when_token_is_null_or_empty_when_is_searched()
-        {
-            Func<Task> action = async () => await _tokenService.GetInvalidTokenAsync(null);
-
-            action.Should().Throw<InvalidTokenException>();
-        }
-
-        [Fact]
         public async void Return_null_when_token_does_not_exists()
         {
-            _mockBlackListTokenRepository.Setup(x => x.GetAsync(DEFAULT_TOKEN)).ReturnsAsync(null as BlackListToken);
+            _mockBlackListTokenRepository.Setup(x => x.FirstOrDefaultAsync(w => w.InvalidToken == DEFAULT_TOKEN)).ReturnsAsync(null as BlackListToken);
 
-            var result = await _tokenService.GetInvalidTokenAsync(DEFAULT_TOKEN);
+            var result = await _tokenService.GetInvalidTokenAsyncByUserIdAsync(DEFAULT_ID);
 
             result.Should().BeNull();
         }
@@ -138,11 +124,12 @@ namespace Bet4ABestWorldPoC.Services.Tests
             {
                 CreatedOn = DateTime.Now,
                 InvalidToken = DEFAULT_TOKEN,
+                UserId = DEFAULT_ID,
             };
 
-            _mockBlackListTokenRepository.Setup(x => x.GetAsync(DEFAULT_TOKEN)).ReturnsAsync(expectedInvalidToken);
+            _mockBlackListTokenRepository.Setup(x => x.FirstOrDefaultAsync(w => w.UserId == DEFAULT_ID)).ReturnsAsync(expectedInvalidToken);
 
-            var result = await _tokenService.GetInvalidTokenAsync(DEFAULT_TOKEN);
+            var result = await _tokenService.GetInvalidTokenAsyncByUserIdAsync(1);
 
             result.Should().Be(expectedInvalidToken);
         }
@@ -166,17 +153,6 @@ namespace Bet4ABestWorldPoC.Services.Tests
             var result = _tokenService.GetCurrentUserToken();
 
             result.Should().Be(DEFAULT_TOKEN);
-        }
-
-        [Fact]
-        public void Return_id_from_current_user()
-        {
-            _mockHttpContextAccessor.Setup(x => x.HttpContext.Request.Headers["Authorization"]).Returns(DEFAULT_TOKEN);
-            _mockHttpContextAccessor.Setup(x => x.HttpContext.User.Identity).Returns(DEFAULT_CLAIMS);
-
-            var result = _tokenService.GetCurrentUserId();
-
-            result.Should().Be(DEFAULT_ID);
         }
 
         [Fact]
@@ -208,17 +184,6 @@ namespace Bet4ABestWorldPoC.Services.Tests
             Action action = () => _tokenService.GetCurrentUserUsername();
 
             action.Should().Throw<InvalidTokenException>();
-        }
-
-        [Fact]
-        public void Return_email_from_current_user()
-        {
-            _mockHttpContextAccessor.Setup(x => x.HttpContext.Request.Headers["Authorization"]).Returns(DEFAULT_TOKEN);
-            _mockHttpContextAccessor.Setup(x => x.HttpContext.User.Identity).Returns(DEFAULT_CLAIMS);
-
-            var result = _tokenService.GetCurrentUserEmail();
-
-            result.Should().Be(DEFAULT_EMAIL);
         }
 
         [Fact]

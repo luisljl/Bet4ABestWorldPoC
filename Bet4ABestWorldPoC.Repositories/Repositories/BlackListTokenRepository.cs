@@ -1,5 +1,8 @@
 ﻿using Bet4ABestWorldPoC.Repositories.Entities;
 using Bet4ABestWorldPoC.Repositories.Interfaces;
+using Microsoft.EntityFrameworkCore;
+using System;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace Bet4ABestWorldPoC.Repositories.Repositories
@@ -25,9 +28,9 @@ namespace Bet4ABestWorldPoC.Repositories.Repositories
             await _dbContext.SaveChangesAsync();
         }
 
-        public async Task<BlackListToken> GetAsync(string token)
+        public async Task<BlackListToken> FirstOrDefaultAsync(Expression<Func<BlackListToken, bool>> predicate)
         {
-            return await _dbContext.Set<BlackListToken>().FindAsync(token);
+            return await _dbContext.Set<BlackListToken>().FirstOrDefaultAsync(predicate);
         }
     }
 }
