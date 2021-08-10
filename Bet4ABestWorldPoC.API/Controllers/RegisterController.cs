@@ -12,21 +12,21 @@ namespace Bet4ABestWorldPoC.API.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class LoginController : ControllerBase
+    public class RegisterController : ControllerBase
     {
-        private readonly ILoginService _loginService;
+        private readonly IRegisterService _registerService;
 
-        public LoginController(ILoginService loginService)
+        public RegisterController(IRegisterService registerService)
         {
-            _loginService = loginService;
+            _registerService = registerService;
         }
 
         [HttpPost]
         [AllowAnonymous]
-        public async Task<IActionResult> Login([FromBody] LoginRequest request)
+        public async Task<IActionResult> Register([FromBody] RegisterRequest request)
         {
-            var response = await _loginService.LoginAsync(request);
-            return Ok(response);
+            await _registerService.RegisterUserAsync(request);
+            return Ok();
         }
     }
 }

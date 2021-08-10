@@ -12,20 +12,20 @@ namespace Bet4ABestWorldPoC.API.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class LoginController : ControllerBase
+    public class BalanceController : ControllerBase
     {
-        private readonly ILoginService _loginService;
+        private readonly IBalanceService _balanceService;
 
-        public LoginController(ILoginService loginService)
+        public BalanceController(IBalanceService balanceService)
         {
-            _loginService = loginService;
+            _balanceService = balanceService;
         }
 
-        [HttpPost]
-        [AllowAnonymous]
-        public async Task<IActionResult> Login([FromBody] LoginRequest request)
+        [HttpGet]
+        [Authorize]
+        public async Task<IActionResult> GetCurrentBalance()
         {
-            var response = await _loginService.LoginAsync(request);
+            var response = await _balanceService.GetCurrentUserCurrentBalanceAsync();
             return Ok(response);
         }
     }
